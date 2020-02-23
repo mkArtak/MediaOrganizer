@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/src/MediaOrganizer/.vs
+/src/MediaOrganizer/bin
+/src/MediaOrganizer/obj
+/src/MediaOrganizer/packages
