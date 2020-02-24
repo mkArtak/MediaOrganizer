@@ -8,14 +8,6 @@ namespace MediaOrganizer.Core
 {
     internal sealed class PhysicalFileOrganizer : IFilesOrganizer
     {
-        private const string VideoSubfolderName = "Movies";
-        private const string PhotosSubfolderName = "Photos";
-
-        private static readonly string[] VideoFileFormatPatterns = new[] { ".mov", ".mp4", ".avi", ".3gp", ".mpg" };
-
-        private static readonly string[] ImageFileFormatPatterns = new[] { ".jpg", ".jpeg" };
-
-
         private IFileMover FileMover { get; }
 
         private IFileEnumerator FileEnumerator { get; }
@@ -37,18 +29,18 @@ namespace MediaOrganizer.Core
             var moverOptions = new FileMoverOptions { RemoveSourceAfterMove = options.RemoveSource };
             CreateDestinationIfNotExist(options.DestinationRoot);
 
-            foreach (string file in Directory.EnumerateFiles(options.SourceRoot, "*", SearchOption.AllDirectories))
+            foreach (string file in this.FileEnumerator.GetFilesAsync(options.SourceRoot))
             {
                 if (token.IsCancellationRequested)
                     return;
 
-                FileType type = GetFileType(file);
+                FileType type = GetFileType(options, file);
                 if (type == FileType.Unknown)
                 {
                     continue;
                 }
 
-                string destinationPath = GetDestinationDirectoryForFile(options.DestinationRoot, file, type);
+                string destinationPath = GetDestinationDirectoryForFile(options, file, type);
                 await this.FileMover.MoveAsync(moverOptions, file, destinationPath);
             }
         }
@@ -61,7 +53,7 @@ namespace MediaOrganizer.Core
             }
         }
 
-        private string GetDestinationDirectoryForFile(string root, string path, FileType fileType)
+        private string GetDestinationDirectoryForFile(FilesOrganizerOptions options, string path, FileType fileType)
         {
             FileInfo info = new FileInfo(path);
             DateTime dateTaken = info.CreationTimeUtc > info.LastWriteTimeUtc ? info.LastWriteTimeUtc : info.CreationTimeUtc;
@@ -69,18 +61,18 @@ namespace MediaOrganizer.Core
             switch (fileType)
             {
                 case FileType.Image:
-                    typeSubfolder = PhotosSubfolderName;
+                    typeSubfolder = options.PhotosSubfolderName;
                     break;
 
                 case FileType.Movie:
-                    typeSubfolder = VideoSubfolderName;
+                    typeSubfolder = options.VideoSubfolderName;
                     break;
 
                 default:
                     throw new ApplicationException("Unexpected file type");
             }
 
-            string directory = Path.Combine(root, typeSubfolder, dateTaken.Year.ToString(), dateTaken.ToString("yyyy-MM-dd"));
+            string directory = Path.Combine(options.DestinationRoot, typeSubfolder, dateTaken.Year.ToString(), dateTaken.ToString("yyyy-MM-dd"));
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
@@ -89,15 +81,15 @@ namespace MediaOrganizer.Core
             return Path.Combine(directory, Path.GetFileName(path));
         }
 
-        private static FileType GetFileType(string filename)
+        private static FileType GetFileType(FilesOrganizerOptions options, string filename)
         {
             FileType result = FileType.Unknown;
             string extension = Path.GetExtension(filename).ToLowerInvariant();
-            if (ImageFileFormatPatterns.Contains(extension))
+            if (options.ImageFileFormatPatterns.Contains(extension))
             {
                 result = FileType.Image;
             }
-            else if (VideoFileFormatPatterns.Contains(extension))
+            else if (options.VideoFileFormatPatterns.Contains(extension))
             {
                 result = FileType.Movie;
             }
