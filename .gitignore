@@ -6,3 +6,6 @@
 /src/MediaOrganizer/bin
 /src/MediaOrganizer/obj
 /src/MediaOrganizer/packages
+/src/.vs/
+/src/MediaOrganizer.Core/bin
+/src/MediaOrganizer.Core/obj
