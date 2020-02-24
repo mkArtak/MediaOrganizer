@@ -1,9 +1,6 @@
 ﻿using MediaOrganizer.Core;
-using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -18,6 +15,8 @@ namespace HomeMediaOrganizer
 
         private bool isRunning = false;
 
+        private CancellationTokenSource CancellationToken { get; set; }
+
         public bool IsRunning
         {
             get { return this.isRunning; }
@@ -26,6 +25,8 @@ namespace HomeMediaOrganizer
                 if (value != this.isRunning)
                 {
                     this.isRunning = value;
+
+                    this.OnStateChanged();
                 }
             }
         }
@@ -63,31 +64,36 @@ namespace HomeMediaOrganizer
 
         private async void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            if (!Directory.Exists(this.SourceDirectory))
+            if (!(this.IsRunning = !this.IsRunning))
             {
-                throw new DirectoryNotFoundException("Source not found");
-            }
-
-            if (this.IsRunning = !this.IsRunning)
-            {
-                this.OnStateChanged();
-            }
-            else
-            {
+                this.CancellationToken.Cancel();
                 return;
             }
 
-            await OrganizeFilesByDatesAndTypes(this.DestinationDirectory, this.SourceDirectory);
+            this.CancellationToken?.Dispose();
+            this.CancellationToken = new CancellationTokenSource();
 
-            this.IsRunning = false;
-            this.OnStateChanged();
+            try
+            {
+                await OrganizeFilesByDatesAndTypes(this.DestinationDirectory, this.SourceDirectory);
+            }
+            finally
+            {
+                this.IsRunning = false;
+            }
         }
 
         private async Task OrganizeFilesByDatesAndTypes(string mediaRoot, string sourceRoot)
         {
+
+            if (!Directory.Exists(sourceRoot))
+            {
+                throw new DirectoryNotFoundException("Source not found");
+            }
+
             var organizer = this.OrganizerFactory.Create();
             var options = new FilesOrganizerOptions { RemoveSource = true, SourceRoot = sourceRoot, DestinationRoot = mediaRoot };
-            await organizer.OrganizeAsync(options);
+            await organizer.OrganizeAsync(options, this.CancellationToken.Token);
         }
     }
 }

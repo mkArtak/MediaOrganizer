@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaOrganizer.Core
@@ -25,16 +26,22 @@ namespace MediaOrganizer.Core
             this.FileEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
         }
 
-        public async Task OrganizeAsync(FilesOrganizerOptions options)
+        public async Task OrganizeAsync(FilesOrganizerOptions options, CancellationToken token)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
+
+            if (token.IsCancellationRequested)
+                return;
 
             var moverOptions = new FileMoverOptions { RemoveSourceAfterMove = options.RemoveSource };
             CreateDestinationIfNotExist(options.DestinationRoot);
 
             foreach (string file in Directory.EnumerateFiles(options.SourceRoot, "*", SearchOption.AllDirectories))
             {
+                if (token.IsCancellationRequested)
+                    return;
+
                 FileType type = GetFileType(file);
                 if (type == FileType.Unknown)
                 {
