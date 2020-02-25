@@ -11,7 +11,7 @@ namespace HomeMediaOrganizer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private FilesOrganizerFactory OrganizerFactory { get; }
+        private PhysicalFilesOrganizerFactory OrganizerFactory { get; }
 
         private bool isRunning = false;
 
@@ -55,11 +55,16 @@ namespace HomeMediaOrganizer
             }
         }
 
+        private bool DeleteOnMove
+        {
+            get => this.chkDeleteOnMove.IsChecked.Value;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
 
-            this.OrganizerFactory = new FilesOrganizerFactory();
+            this.OrganizerFactory = new PhysicalFilesOrganizerFactory();
         }
 
         private async void btnStart_Click(object sender, RoutedEventArgs e)
@@ -75,7 +80,7 @@ namespace HomeMediaOrganizer
 
             try
             {
-                await OrganizeFilesByDatesAndTypes(this.DestinationDirectory, this.SourceDirectory);
+                await OrganizeFilesByDatesAndTypes(this.DestinationDirectory, this.SourceDirectory, this.DeleteOnMove);
             }
             finally
             {
@@ -83,7 +88,7 @@ namespace HomeMediaOrganizer
             }
         }
 
-        private async Task OrganizeFilesByDatesAndTypes(string mediaRoot, string sourceRoot)
+        private async Task OrganizeFilesByDatesAndTypes(string mediaRoot, string sourceRoot, bool deleteOnMove)
         {
 
             if (!Directory.Exists(sourceRoot))
@@ -92,7 +97,7 @@ namespace HomeMediaOrganizer
             }
 
             var organizer = this.OrganizerFactory.Create();
-            var options = new FilesOrganizerOptions { RemoveSource = true, SourceRoot = sourceRoot, DestinationRoot = mediaRoot };
+            var options = new FilesOrganizerOptions { RemoveSource = deleteOnMove, SourceRoot = sourceRoot, DestinationRoot = mediaRoot };
             await organizer.OrganizeAsync(options, this.CancellationToken.Token);
         }
     }

@@ -56,7 +56,7 @@ namespace MediaOrganizer.Core
         private string GetDestinationDirectoryForFile(FilesOrganizerOptions options, string path, FileType fileType)
         {
             FileInfo info = new FileInfo(path);
-            DateTime dateTaken = info.CreationTimeUtc > info.LastWriteTimeUtc ? info.LastWriteTimeUtc : info.CreationTimeUtc;
+            var dateTaken = info.CreationTimeUtc > info.LastWriteTimeUtc ? info.LastWriteTimeUtc : info.CreationTimeUtc;
             string typeSubfolder;
             switch (fileType)
             {
