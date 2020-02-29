@@ -9,3 +9,6 @@
 /src/.vs/
 /src/MediaOrganizer.Core/bin
 /src/MediaOrganizer.Core/obj
+/src/MediaOrganizer.Local/.vs
+/src/MediaOrganizer.Local/bin
+/src/MediaOrganizer.Local/obj

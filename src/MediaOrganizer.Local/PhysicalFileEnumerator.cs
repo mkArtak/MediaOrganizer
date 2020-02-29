@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediaOrganizer.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MediaOrganizer.Core
+namespace MediaOrganizer.Local
 {
     public sealed class PhysicalFileEnumerator : IFileEnumerator
     {

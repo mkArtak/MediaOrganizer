@@ -1,4 +1,5 @@
 ﻿using MediaOrganizer.Core;
+using MediaOrganizer.Local;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;

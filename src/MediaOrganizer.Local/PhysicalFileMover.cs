@@ -1,8 +1,9 @@
-﻿using System;
+﻿using MediaOrganizer.Core;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace MediaOrganizer.Core
+namespace MediaOrganizer.Local
 {
     internal sealed class PhysicalFileMover : IFileMover
     {

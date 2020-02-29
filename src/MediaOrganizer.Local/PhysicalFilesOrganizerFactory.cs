@@ -1,4 +1,6 @@
-﻿namespace MediaOrganizer.Core
+﻿using MediaOrganizer.Core;
+
+namespace MediaOrganizer.Local
 {
     public class PhysicalFilesOrganizerFactory
     {
@@ -6,13 +8,15 @@
 
         private readonly PhysicalFileEnumerator enumerator = new PhysicalFileEnumerator();
 
+        private readonly Mapper mapper = new Mapper();
+
         public PhysicalFilesOrganizerFactory()
         {
         }
 
         public IFilesOrganizer Create()
         {
-            return new PhysicalFileOrganizer(this.fileMover, this.enumerator);
+            return new PhysicalFileOrganizer(this.fileMover, this.enumerator, this.mapper);
         }
     }
 }

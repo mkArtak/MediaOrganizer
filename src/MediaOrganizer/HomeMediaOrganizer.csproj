@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MediaOrganizer.Core\MediaOrganizer.Core.csproj" />
+    <ProjectReference Include="..\MediaOrganizer.Local\MediaOrganizer.Local.csproj" />
   </ItemGroup>
 
 </Project>
