@@ -15,6 +15,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -29,5 +30,8 @@
 
         <TextBlock Grid.Row="2" Text="Delete on move: " HorizontalAlignment="Left" Margin="0, 3" />
         <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding Path=RemoveSource, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
+        
+        <TextBlock Grid.Row="3" Text="Skip existing files: " HorizontalAlignment="Left" Margin="0, 3" />
+        <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding Path=SkipExistingFiles, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
     </Grid>
 </UserControl>
