@@ -10,41 +10,19 @@ namespace HomeMediaOrganizer.ViewModels
 {
     public class FileOrganizerViewModel : BindableBase
     {
-        private string destinatioNDirectory;
-        private string sourceDirectory;
-        private bool deleteOnMove;
         public bool isRunning;
 
         private CancellationTokenSource cancellationToken;
         private PhysicalFilesOrganizerFactory organizerFactory;
 
+        public FileOrganizerOptionsViewModel Options { get; } = new FileOrganizerOptionsViewModel() { VideoSubfolderName = "Movies", PhotosSubfolderName = "Photos" };
 
         public DelegateCommand OrganizeFilesCommand { get; private set; }
-
 
         public bool IsRunning
         {
             get => this.isRunning;
             set { SetProperty(ref this.isRunning, value); }
-        }
-
-        public string SourceDirectory
-        {
-            get => this.sourceDirectory;
-            set { SetProperty(ref this.sourceDirectory, value); }
-        }
-
-        public string DestinationDirectory
-        {
-            get => this.destinatioNDirectory;
-            set { SetProperty(ref this.destinatioNDirectory, value); }
-        }
-
-        public bool DeleteOnMove
-        {
-
-            get => this.deleteOnMove;
-            set { SetProperty(ref this.deleteOnMove, value); }
         }
 
         public FileOrganizerViewModel() : base()
@@ -77,15 +55,13 @@ namespace HomeMediaOrganizer.ViewModels
 
         private async Task OrganizeFilesByDatesAndTypes()
         {
-
-            if (!Directory.Exists(this.SourceDirectory))
+            if (!Directory.Exists(this.Options.SourceRoot))
             {
                 throw new DirectoryNotFoundException("Source not found");
             }
 
             var organizer = this.organizerFactory.Create();
-            var options = new FilesOrganizerOptions { RemoveSource = this.DeleteOnMove, SourceRoot = this.SourceDirectory, DestinationRoot = this.DestinationDirectory };
-            await organizer.OrganizeAsync(options, this.cancellationToken.Token);
+            await organizer.OrganizeAsync(this.Options.GetOptions(), this.cancellationToken.Token);
         }
     }
 }

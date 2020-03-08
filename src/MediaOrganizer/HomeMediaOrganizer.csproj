@@ -15,8 +15,4 @@
     <ProjectReference Include="..\MediaOrganizer.Local\MediaOrganizer.Local.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Converters\" />
-  </ItemGroup>
-
 </Project>
