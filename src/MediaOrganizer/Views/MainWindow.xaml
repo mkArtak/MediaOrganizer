@@ -1,0 +1,44 @@
+﻿<Window x:Class="HomeMediaOrganizer.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="False"
+        xmlns:vm ="clr-namespace:HomeMediaOrganizer.ViewModels"
+        Title="Media Organizer" Height="188" MaxHeight="200" Width="525">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <vm:FileOrganizerViewModel />
+    </Window.DataContext>
+    <Grid Margin="6">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Source Root:" HorizontalAlignment="Left" />
+        <TextBox x:Name="txtSource" ToolTip="Specify the folder, where the random images and videos are placed." Text="{Binding Path=SourceDirectory, Mode=TwoWay}" Grid.Column="1" Margin="3, 3, 0, 0"/>
+
+        <TextBlock Text="Destination Root:" Grid.Row="1" Margin="0, 6, 0, 0"  HorizontalAlignment="Left"/>
+        <TextBox x:Name="txtDestination" ToolTip="Specify the root media folder. The folder structure will be: %MEDIAROOT%\[Videos|Photos]\[year]\Month\[yyyy-mm-dd]\[filename]" Text="{Binding Path=DestinationDirectory, Mode=TwoWay}" Grid.Column="1" Grid.Row="1" Margin="3, 6, 0, 0"/>
+
+        <Expander Grid.Row="2" Grid.ColumnSpan="2" ExpandDirection="Down" IsExpanded="true" Padding="6">
+            <Expander.Header>Options</Expander.Header>
+            <CheckBox x:Name="chkDeleteOnMove" Content="Delete on move" IsChecked="{Binding Path=DeleteOnMove, Mode=TwoWay}" />
+        </Expander>
+
+        <StackPanel Orientation="Vertical" Grid.Row="3" Grid.ColumnSpan="2">
+            <ProgressBar x:Name="prgProgress" Height="20" IsIndeterminate="True" Visibility="{Binding IsRunning, Converter={StaticResource cvBoolenToVisibilityConverter}}" />
+            <Label x:Name="lblProcessedCount" Content="asdf" />
+        </StackPanel>
+        <Button x:Name="btnStart" Content="Start..." Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="121,6,212,0" Grid.Column="1" Width="81" Command="{Binding OrganizeFilesCommand}" />
+    </Grid>
+</Window>

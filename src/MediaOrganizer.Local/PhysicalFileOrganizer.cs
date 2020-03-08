@@ -38,8 +38,12 @@ namespace MediaOrganizer.Local
                     return;
 
                 var destinationPath = this.Mapper.GetDestination(options, file);
+                if (destinationPath == null)
+                {
+                    // This file should not be moved
+                    continue;
+                }
 
-                //string destinationPath = GetDestinationDirectoryForFile(options, file, type);
                 await this.FileMover.MoveAsync(moverOptions, file, destinationPath);
             }
         }

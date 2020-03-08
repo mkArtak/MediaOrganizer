@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HomeMediaOrganizer.ViewModels;
+using HomeMediaOrganizer.Views;
+using Prism.Mvvm;
 using System.Windows;
 
 namespace HomeMediaOrganizer
@@ -13,5 +10,11 @@ namespace HomeMediaOrganizer
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            //ViewModelLocationProvider.Register<MainWindow, FileOrganizerViewModel>();
+        }
     }
 }

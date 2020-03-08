@@ -11,28 +11,32 @@ namespace MediaOrganizer.Local
         {
         }
 
-        public Task MoveAsync(FileMoverOptions options, string from, string to)
+        public async Task MoveAsync(FileMoverOptions options, string from, string to)
         {
             if (options == null)
             {
                 throw new ArgumentNullException(nameof(options));
             }
 
-            return Task.Run(() =>
+            if (string.Equals(from, to, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (!string.Equals(from, to, StringComparison.InvariantCultureIgnoreCase))
+                return;
+            }
+
+            if (File.Exists(to) && options.SkipIfFileExists)
+            {
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                if (options.RemoveSourceAfterMove)
                 {
-                    if (File.Exists(to))
-                    {
-                        if (options.RemoveSourceAfterMove)
-                        {
-                            File.Delete(from);
-                        }
-                    }
-                    else
-                    {
-                        File.Move(from, to);
-                    }
+                    File.Move(from, to);
+                }
+                else
+                {
+                    File.Copy(from, to);
                 }
             });
         }

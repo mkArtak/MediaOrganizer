@@ -7,8 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MediaOrganizer.Core\MediaOrganizer.Core.csproj" />
     <ProjectReference Include="..\MediaOrganizer.Local\MediaOrganizer.Local.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Converters\" />
   </ItemGroup>
 
 </Project>
