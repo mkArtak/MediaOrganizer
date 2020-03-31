@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Core", "Medi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Local", "MediaOrganizer.Local\MediaOrganizer.Local.csproj", "{4EDC4173-C114-4A97-9AC9-284300876A73}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganizer.Service", "MediaOrganizer.Service\MediaOrganizer.Service.csproj", "{98E7CD7B-9422-467A-A098-E52BB3C47F02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{4EDC4173-C114-4A97-9AC9-284300876A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EDC4173-C114-4A97-9AC9-284300876A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EDC4173-C114-4A97-9AC9-284300876A73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98E7CD7B-9422-467A-A098-E52BB3C47F02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98E7CD7B-9422-467A-A098-E52BB3C47F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98E7CD7B-9422-467A-A098-E52BB3C47F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98E7CD7B-9422-467A-A098-E52BB3C47F02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

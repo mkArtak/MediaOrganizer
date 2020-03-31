@@ -2,13 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/src/MediaOrganizer/.vs
-/src/MediaOrganizer/bin
-/src/MediaOrganizer/obj
 /src/MediaOrganizer/packages
-/src/.vs/
-/src/MediaOrganizer.Core/bin
-/src/MediaOrganizer.Core/obj
-/src/MediaOrganizer.Local/.vs
-/src/MediaOrganizer.Local/bin
-/src/MediaOrganizer.Local/obj
+/src/**/bin/
+/src/**/obj/
+/src/**/*.user
+/src/**/.vs/
+
