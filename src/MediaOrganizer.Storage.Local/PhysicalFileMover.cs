@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace MediaOrganizer.Local
+namespace MediaOrganizer.Storage.Local
 {
     internal sealed class PhysicalFileMover : IFileMover
     {

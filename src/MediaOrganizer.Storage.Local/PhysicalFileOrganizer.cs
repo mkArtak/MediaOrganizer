@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MediaOrganizer.Local
+namespace MediaOrganizer.Storage.Local
 {
     internal sealed class PhysicalFileOrganizer : IFilesOrganizer
     {

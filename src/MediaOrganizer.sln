@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer", "MediaOrga
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Core", "MediaOrganizer.Core\MediaOrganizer.Core.csproj", "{0E7374DE-5567-43D9-852B-5D6E9D35CC3E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Local", "MediaOrganizer.Local\MediaOrganizer.Local.csproj", "{4EDC4173-C114-4A97-9AC9-284300876A73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Storage.Local", "MediaOrganizer.Storage.Local\MediaOrganizer.Storage.Local.csproj", "{4EDC4173-C114-4A97-9AC9-284300876A73}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Service", "MediaOrganizer.Service\MediaOrganizer.Service.csproj", "{98E7CD7B-9422-467A-A098-E52BB3C47F02}"
 EndProject

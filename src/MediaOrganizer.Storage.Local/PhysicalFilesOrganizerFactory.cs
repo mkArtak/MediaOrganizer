@@ -1,6 +1,6 @@
 ﻿using MediaOrganizer.Core;
 
-namespace MediaOrganizer.Local
+namespace MediaOrganizer.Storage.Local
 {
     public class PhysicalFilesOrganizerFactory
     {

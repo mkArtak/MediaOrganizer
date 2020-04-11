@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MediaOrganizer.Core\MediaOrganizer.Core.csproj" />
-    <ProjectReference Include="..\MediaOrganizer.Local\MediaOrganizer.Local.csproj" />
+    <ProjectReference Include="..\MediaOrganizer.Storage.Local\MediaOrganizer.Storage.Local.csproj" />
   </ItemGroup>
 
 </Project>

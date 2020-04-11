@@ -1,5 +1,5 @@
 ﻿using MediaOrganizer.Core;
-using MediaOrganizer.Local;
+using MediaOrganizer.Storage.Local;
 using Prism.Commands;
 using Prism.Mvvm;
 using System.IO;

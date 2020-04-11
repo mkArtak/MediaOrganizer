@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MediaOrganizer.Local
+namespace MediaOrganizer.Storage.Local
 {
     public sealed class PhysicalFileEnumerator : IFileEnumerator
     {

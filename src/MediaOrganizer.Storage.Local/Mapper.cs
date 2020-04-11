@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace MediaOrganizer.Local
+namespace MediaOrganizer.Storage.Local
 {
     public class Mapper : IMapper
     {
