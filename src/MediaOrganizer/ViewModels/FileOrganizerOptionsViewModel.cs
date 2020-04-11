@@ -1,7 +1,7 @@
 ﻿using MediaOrganizer.Core;
 using Prism.Mvvm;
 
-namespace HomeMediaOrganizer.ViewModels
+namespace MediaOrganizer.ViewModels
 {
     public class FileOrganizerOptionsViewModel : BindableBase
     {

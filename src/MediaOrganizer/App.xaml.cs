@@ -1,9 +1,9 @@
-﻿using HomeMediaOrganizer.ViewModels;
-using HomeMediaOrganizer.Views;
+﻿using MediaOrganizer.ViewModels;
+using MediaOrganizer.Views;
 using Prism.Mvvm;
 using System.Windows;
 
-namespace HomeMediaOrganizer
+namespace MediaOrganizer
 {
     /// <summary>
     /// Interaction logic for App.xaml

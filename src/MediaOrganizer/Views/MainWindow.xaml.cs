@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace HomeMediaOrganizer.Views
+namespace MediaOrganizer.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

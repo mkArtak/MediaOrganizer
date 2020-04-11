@@ -6,7 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HomeMediaOrganizer.ViewModels
+namespace MediaOrganizer.ViewModels
 {
     public class FileOrganizerViewModel : BindableBase
     {

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HomeMediaOrganizer.Properties
+namespace MediaOrganizer.Properties
 {
 
 

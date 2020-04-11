@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace HomeMediaOrganizer.Views
+namespace MediaOrganizer.Views
 {
     /// <summary>
     /// Interaction logic for FileOrganizerOptionsView.xaml
