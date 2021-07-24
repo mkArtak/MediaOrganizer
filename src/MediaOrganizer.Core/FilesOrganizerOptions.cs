@@ -1,4 +1,6 @@
-﻿namespace MediaOrganizer.Core
+﻿using System;
+
+namespace MediaOrganizer.Core
 {
     public class FilesOrganizerOptions
     {
@@ -17,5 +19,10 @@
         public bool RemoveSource { get; set; }
 
         public bool SkipExistingFiles { get; set; }
+
+        public override string ToString()
+        {
+            return $"VideoSubfolderName: {VideoSubfolderName}{Environment.NewLine}PhotoSubfolderName: {PhotosSubfolderName}{Environment.NewLine}SourceRoot: {SourceRoot}{Environment.NewLine}DestinationRoot: {DestinationRoot}{Environment.NewLine}RemoveSource: {RemoveSource}{Environment.NewLine}SkipExistingFiles: {SkipExistingFiles}";
+        }
     }
 }
