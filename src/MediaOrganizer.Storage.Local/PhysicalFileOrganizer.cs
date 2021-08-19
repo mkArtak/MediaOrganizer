@@ -14,30 +14,30 @@ namespace MediaOrganizer.Storage.Local
 
         private IMapper Mapper { get; }
 
-        public PhysicalFileOrganizer(IFileMover mover, IFileEnumerator enumerator, IMapper mapper)
+        private FilesOrganizerOptions Options { get; }
+
+        public PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper)
         {
+            this.Options = options ?? throw new ArgumentNullException(nameof(options));
             this.FileMover = mover ?? throw new ArgumentNullException(nameof(mover));
             this.FileEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
             this.Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task OrganizeAsync(FilesOrganizerOptions options, CancellationToken token)
+        public async Task OrganizeAsync(CancellationToken token)
         {
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
-
             if (token.IsCancellationRequested)
                 return;
 
-            var moverOptions = new FileMoverOptions { RemoveSourceAfterMove = options.RemoveSource };
-            CreateDestinationIfNotExist(options.DestinationRoot);
+            var moverOptions = new FileMoverOptions { RemoveSourceAfterMove = this.Options.RemoveSource };
+            CreateDestinationIfNotExist(this.Options.DestinationRoot);
 
-            foreach (string file in this.FileEnumerator.GetFilesAsync(options.SourceRoot))
+            foreach (string file in this.FileEnumerator.GetFilesAsync(this.Options.SourceRoot))
             {
                 if (token.IsCancellationRequested)
                     return;
 
-                var destinationPath = this.Mapper.GetDestination(options, file);
+                var destinationPath = this.Mapper.GetDestination(file);
                 if (destinationPath == null)
                 {
                     // This file should not be moved

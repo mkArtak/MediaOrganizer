@@ -20,6 +20,8 @@ namespace MediaOrganizer.Core
 
         public bool SkipExistingFiles { get; set; }
 
+        public string DestinationPattern { get; set; }
+
         public override string ToString()
         {
             return $"VideoSubfolderName: {VideoSubfolderName}{Environment.NewLine}PhotoSubfolderName: {PhotosSubfolderName}{Environment.NewLine}SourceRoot: {SourceRoot}{Environment.NewLine}DestinationRoot: {DestinationRoot}{Environment.NewLine}RemoveSource: {RemoveSource}{Environment.NewLine}SkipExistingFiles: {SkipExistingFiles}";

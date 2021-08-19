@@ -11,6 +11,7 @@ namespace MediaOrganizer.ViewModels
         private string destinationRoot;
         private bool removeSource;
         private bool skipExistingFiles;
+        private string destinationPattern = "{Year}/{MonthName}/{Year}-{Month}-{Day}";
 
         public bool SkipExistingFiles { get => skipExistingFiles; set => SetProperty(ref skipExistingFiles, value); }
 
@@ -23,6 +24,8 @@ namespace MediaOrganizer.ViewModels
         public string PhotosSubfolderName { get => photosSubfolderName; set => SetProperty(ref this.photosSubfolderName, value); }
 
         public string VideoSubfolderName { get => videoSubfolderName; set => SetProperty(ref this.videoSubfolderName, value); }
+
+        public string DestinationPattern { get => destinationPattern; set => SetProperty(ref destinationPattern, value); }
 
         public FileOrganizerOptionsViewModel() : base()
         {
@@ -37,8 +40,8 @@ namespace MediaOrganizer.ViewModels
                 PhotosSubfolderName = this.PhotosSubfolderName,
                 VideoSubfolderName = this.VideoSubfolderName,
                 RemoveSource = this.RemoveSource,
-                SkipExistingFiles = this.SkipExistingFiles
-
+                SkipExistingFiles = this.SkipExistingFiles,
+                DestinationPattern = this.DestinationPattern
             };
         }
     }

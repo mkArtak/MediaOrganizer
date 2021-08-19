@@ -5,6 +5,6 @@ namespace MediaOrganizer.Core
 {
     public interface IFilesOrganizer
     {
-        Task OrganizeAsync(FilesOrganizerOptions options, CancellationToken token);
+        Task OrganizeAsync(CancellationToken token);
     }
 }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediaOrganizer.Core;
+using MediaOrganizer.Storage.Local;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace MediaOrganizer.Service
 {
@@ -22,6 +24,9 @@ namespace MediaOrganizer.Service
                 {
                     IConfiguration configuration = hostContext.Configuration;
                     services.Configure<FilesOrganizerOptions>(configuration.GetSection(nameof(FilesOrganizerOptions)));
+
+                    services.AddSingleton<FilesOrganizerOptions>(sp => sp.GetRequiredService<IOptions<FilesOrganizerOptions>>().Value);
+                    services.AddLocalStorageServices();
 
                     services.AddHostedService<Worker>();
                 });

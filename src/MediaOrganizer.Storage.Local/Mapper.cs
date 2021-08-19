@@ -7,12 +7,14 @@ namespace MediaOrganizer.Storage.Local
 {
     public class Mapper : IMapper
     {
-        public Mapper()
-        {
+        private readonly FilesOrganizerOptions options;
 
+        public Mapper(FilesOrganizerOptions options)
+        {
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public string GetDestination(FilesOrganizerOptions options, string path)
+        public string GetDestination(string path)
         {
             FileType type = GetFileType(options, path);
             if (type == FileType.Unknown)
@@ -22,22 +24,14 @@ namespace MediaOrganizer.Storage.Local
 
             FileInfo info = new FileInfo(path);
             var dateTaken = info.CreationTimeUtc > info.LastWriteTimeUtc ? info.LastWriteTimeUtc : info.CreationTimeUtc;
-            string typeSubfolder;
-            switch (type)
+            string mediaTypeFolder = type switch
             {
-                case FileType.Image:
-                    typeSubfolder = options.PhotosSubfolderName;
-                    break;
-
-                case FileType.Movie:
-                    typeSubfolder = options.VideoSubfolderName;
-                    break;
-
-                default:
-                    throw new ApplicationException("Unexpected file type");
-            }
-
-            string directory = Path.Combine(options.DestinationRoot, typeSubfolder, dateTaken.Year.ToString(), dateTaken.ToString("yyyy-MM-dd"));
+                FileType.Image => this.options.PhotosSubfolderName,
+                FileType.Movie => this.options.VideoSubfolderName,
+                _ => throw new ApplicationException("Unexpected file type")
+            };
+            string relativePath = GetDestinationFolder(dateTaken);
+            string directory = Path.Combine(this.options.DestinationRoot, mediaTypeFolder, relativePath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
@@ -46,10 +40,16 @@ namespace MediaOrganizer.Storage.Local
             return Path.Combine(directory, Path.GetFileName(path));
         }
 
+        protected virtual string GetDestinationFolder(DateTime dateTaken)
+        {
+            return Path.Combine(dateTaken.Year.ToString(), dateTaken.ToString("yyyy-MM-dd"));
+        }
+
         private static FileType GetFileType(FilesOrganizerOptions options, string filename)
         {
-            FileType result = FileType.Unknown;
             string extension = Path.GetExtension(filename).ToLowerInvariant();
+
+            FileType result;
             if (options.ImageFileFormatPatterns.Contains(extension))
             {
                 result = FileType.Image;

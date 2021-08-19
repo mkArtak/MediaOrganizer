@@ -2,6 +2,6 @@
 {
     public interface IMapper
     {
-        string GetDestination(FilesOrganizerOptions options, string source);
+        string GetDestination(string source);
     }
 }

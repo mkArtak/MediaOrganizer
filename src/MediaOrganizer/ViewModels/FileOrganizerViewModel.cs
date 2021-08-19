@@ -1,8 +1,6 @@
-﻿using MediaOrganizer.Core;
-using MediaOrganizer.Storage.Local;
+﻿using MediaOrganizer.Storage.Local;
 using Prism.Commands;
 using Prism.Mvvm;
-using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +12,6 @@ namespace MediaOrganizer.ViewModels
         public bool isRunning;
 
         private CancellationTokenSource cancellationToken;
-        private PhysicalFilesOrganizerFactory organizerFactory;
 
         public FileOrganizerOptionsViewModel Options { get; } = new FileOrganizerOptionsViewModel() { VideoSubfolderName = "Movies", PhotosSubfolderName = "Photos" };
 
@@ -28,8 +25,6 @@ namespace MediaOrganizer.ViewModels
 
         public FileOrganizerViewModel() : base()
         {
-            this.organizerFactory = new PhysicalFilesOrganizerFactory();
-
             this.OrganizeFilesCommand = new DelegateCommand(Organize, () => !this.IsRunning);
         }
 
@@ -61,8 +56,9 @@ namespace MediaOrganizer.ViewModels
                 throw new DirectoryNotFoundException("Source not found");
             }
 
-            var organizer = this.organizerFactory.Create();
-            await organizer.OrganizeAsync(this.Options.GetOptions(), this.cancellationToken.Token);
+            var organizerFactory = new PhysicalFilesOrganizerFactory(this.Options.GetOptions());
+            var organizer = organizerFactory.Create();
+            await organizer.OrganizeAsync(this.cancellationToken.Token);
         }
     }
 }
