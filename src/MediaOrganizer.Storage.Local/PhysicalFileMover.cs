@@ -11,7 +11,7 @@ namespace MediaOrganizer.Storage.Local
         {
         }
 
-        public async Task MoveAsync(FileMoverOptions options, string from, string to)
+        public Task MoveAsync(FileMoverOptions options, string from, string to)
         {
             if (options == null)
             {
@@ -20,15 +20,15 @@ namespace MediaOrganizer.Storage.Local
 
             if (string.Equals(from, to, StringComparison.InvariantCultureIgnoreCase))
             {
-                return;
+                return Task.CompletedTask;
             }
 
-            if (File.Exists(to) && options.SkipIfFileExists)
+            if (options.SkipIfFileExists && File.Exists(to))
             {
-                return;
+                return Task.CompletedTask;
             }
 
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 if (options.RemoveSourceAfterMove)
                 {
