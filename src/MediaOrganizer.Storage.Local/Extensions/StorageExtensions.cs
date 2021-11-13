@@ -1,5 +1,6 @@
 ﻿using MediaOrganizer.Core;
 using MediaOrganizer.Storage.Local;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -9,8 +10,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddSingleton<IMapper, Mapper>();
             services.AddSingleton<IFileEnumerator, PhysicalFileEnumerator>();
-            services.AddSingleton<IFileMover, PhysicalFileMover>();
-            services.AddSingleton<IFilesOrganizer, PhysicalFileOrganizer>();
+            services.AddTransient<IFileMover>(sp => new PhysicalFileMover(sp.GetRequiredService<ILogger<PhysicalFileMover>>()));
+            services.AddTransient<IFilesOrganizer, PhysicalFileOrganizer>();
 
             return services;
         }

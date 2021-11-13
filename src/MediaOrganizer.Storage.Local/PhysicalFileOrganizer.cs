@@ -1,5 +1,6 @@
 ﻿using MediaOrganizer.Core;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,8 @@ namespace MediaOrganizer.Storage.Local
             var moverOptions = new FileMoverOptions { RemoveSourceAfterMove = this.Options.RemoveSource };
             CreateDestinationIfNotExist(this.Options.DestinationRoot);
 
+            IList<Task> moveTasks = new List<Task>();
+
             foreach (string file in this.FileEnumerator.GetFilesAsync(this.Options.SourceRoot))
             {
                 if (token.IsCancellationRequested)
@@ -44,8 +47,10 @@ namespace MediaOrganizer.Storage.Local
                     continue;
                 }
 
-                await this.FileMover.MoveAsync(moverOptions, file, destinationPath);
+                moveTasks.Add(this.FileMover.MoveAsync(moverOptions, file, destinationPath));
             }
+
+            await Task.WhenAll(moveTasks);
         }
 
         private void CreateDestinationIfNotExist(string destinationRoot)

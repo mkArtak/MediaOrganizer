@@ -1,29 +1,25 @@
 ﻿using MediaOrganizer.Core;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace MediaOrganizer.Storage.Local
 {
     public class PhysicalFilesOrganizerFactory
     {
-        private readonly PhysicalFileMover fileMover;
+        private ILogger logger;
 
-        private readonly PhysicalFileEnumerator enumerator;
-
-        private readonly Mapper mapper;
-
-        private readonly FilesOrganizerOptions options;
-
-        public PhysicalFilesOrganizerFactory(FilesOrganizerOptions options)
+        public PhysicalFilesOrganizerFactory(ILogger logger)
         {
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
-            this.mapper = new PatternBasedPathMapper(options);
-            this.fileMover = new PhysicalFileMover();
-            this.enumerator = new PhysicalFileEnumerator();
+            this.logger = logger ?? throw new ArgumentException(nameof(logger));
         }
 
-        public IFilesOrganizer Create()
+        public IFilesOrganizer Create(FilesOrganizerOptions options)
         {
-            return new PhysicalFileOrganizer(this.options, this.fileMover, this.enumerator, this.mapper);
+            var mapper = new PatternBasedPathMapper(options);
+            var fileMover = new PhysicalFileMover(this.logger);
+            var enumerator = new PhysicalFileEnumerator();
+
+            return new PhysicalFileOrganizer(options, fileMover, enumerator, mapper);
         }
     }
 }
