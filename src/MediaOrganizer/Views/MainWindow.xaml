@@ -5,7 +5,7 @@
         prism:ViewModelLocator.AutoWireViewModel="False"
         xmlns:uc="clr-namespace:MediaOrganizer.Views"
         xmlns:vm ="clr-namespace:MediaOrganizer.ViewModels"
-        Title="Media Organizer" Height="200" MaxHeight="230" Width="525">
+        Title="Media Organizer" Height="230" MaxHeight="250" Width="525">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter"/>
     </Window.Resources>
