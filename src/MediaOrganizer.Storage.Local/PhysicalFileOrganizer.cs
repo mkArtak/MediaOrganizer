@@ -25,7 +25,7 @@ namespace MediaOrganizer.Storage.Local
             this.Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task OrganizeAsync(CancellationToken token)
+        public async Task OrganizeAsync(IProgress<string> progress, CancellationToken token)
         {
             if (token.IsCancellationRequested)
                 return;
@@ -44,10 +44,14 @@ namespace MediaOrganizer.Storage.Local
                 if (destinationPath == null)
                 {
                     // This file should not be moved
+                    // TODO: Add logging here.
                     continue;
                 }
 
-                moveTasks.Add(this.FileMover.MoveAsync(moverOptions, file, destinationPath));
+                await this.FileMover.MoveAsync(moverOptions, file, destinationPath);
+                progress.Report(file);
+
+                //moveTasks.Add(this.FileMover.MoveAsync(moverOptions, file, destinationPath));
             }
 
             await Task.WhenAll(moveTasks);

@@ -29,7 +29,7 @@ namespace MediaOrganizer.Service
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 _logger.LogInformation($"Worker started with options: {_options.Value}");
 
-                await _organizer.OrganizeAsync(stoppingToken);
+                await _organizer.OrganizeAsync(new Progress<string>(), stoppingToken);
 
                 await Task.Delay(OrganizerRunPeriod);
             }

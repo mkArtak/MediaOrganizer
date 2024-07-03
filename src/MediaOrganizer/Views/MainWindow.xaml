@@ -25,7 +25,7 @@
         </GroupBox>
 
         <StackPanel Orientation="Vertical" Grid.Row="1" Visibility="{Binding IsRunning, Converter={StaticResource cvBoolenToVisibilityConverter}}">
-            <Label x:Name="lblProcessedCount" Content="asdf" />
+            <Label x:Name="lblProcessedCount" Content="{Binding CurrentFile}" />
             <ProgressBar x:Name="prgProgress" Height="20" IsIndeterminate="True"  />
         </StackPanel>
 
