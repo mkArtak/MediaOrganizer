@@ -19,7 +19,7 @@ namespace MediaOrganizer.Storage.Local
             var fileMover = new PhysicalFileMover(this.logger);
             var enumerator = new PhysicalFileEnumerator();
 
-            return new PhysicalFileOrganizer(options, fileMover, enumerator, mapper);
+            return new PhysicalFileOrganizer(options, fileMover, enumerator, mapper, this.logger);
         }
     }
 }

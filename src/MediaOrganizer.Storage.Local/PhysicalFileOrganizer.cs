@@ -1,4 +1,5 @@
 ﻿using MediaOrganizer.Core;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,18 +18,23 @@ namespace MediaOrganizer.Storage.Local
 
         private FilesOrganizerOptions Options { get; }
 
-        public PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper)
+        private ILogger Logger { get; }
+
+        public PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, ILogger logger)
         {
             this.Options = options ?? throw new ArgumentNullException(nameof(options));
             this.FileMover = mover ?? throw new ArgumentNullException(nameof(mover));
             this.FileEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
             this.Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task OrganizeAsync(IProgress<string> progress, CancellationToken token)
         {
             if (token.IsCancellationRequested)
                 return;
+
+            this.Logger.LogInformation($"Preparing to move files from {this.Options.SourceRoot} to {this.Options.DestinationRoot}");
 
             var moverOptions = new FileMoverOptions { RemoveSourceAfterMove = this.Options.RemoveSource };
             CreateDestinationIfNotExist(this.Options.DestinationRoot);
@@ -43,18 +49,16 @@ namespace MediaOrganizer.Storage.Local
                 var destinationPath = this.Mapper.GetDestination(file);
                 if (destinationPath == null)
                 {
-                    // This file should not be moved
-                    // TODO: Add logging here.
+                    this.Logger.LogWarning($"No destination available for file: {file}");
                     continue;
                 }
 
                 await this.FileMover.MoveAsync(moverOptions, file, destinationPath);
                 progress.Report(file);
-
-                //moveTasks.Add(this.FileMover.MoveAsync(moverOptions, file, destinationPath));
             }
 
             await Task.WhenAll(moveTasks);
+            this.Logger.LogInformation("Finished moving files");
         }
 
         private void CreateDestinationIfNotExist(string destinationRoot)
