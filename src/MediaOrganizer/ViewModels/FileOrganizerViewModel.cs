@@ -17,7 +17,6 @@ namespace MediaOrganizer.ViewModels
         private readonly PhysicalFilesOrganizerFactory organizerFactory;
 
         private CancellationTokenSource cancellationToken;
-        private Task organizingTask;
         private readonly Progress<string> progress;
         private ILogger<FileOrganizerViewModel> logger;
 
