@@ -1,8 +1,8 @@
 ﻿using MediaOrganizer.Core;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,9 +39,11 @@ namespace MediaOrganizer.Storage.Local
             var moverOptions = new FileMoverOptions { RemoveSourceAfterMove = this.Options.RemoveSource };
             CreateDestinationIfNotExist(this.Options.DestinationRoot);
 
-            IList<Task> moveTasks = new List<Task>();
+            var counter = 0;
+            var files = this.FileEnumerator.GetFiles(this.Options.SourceRoot);
+            var totalFiles = files.Count();
 
-            foreach (string file in this.FileEnumerator.GetFilesAsync(this.Options.SourceRoot))
+            foreach (string file in files)
             {
                 if (token.IsCancellationRequested)
                     return;
@@ -54,10 +56,11 @@ namespace MediaOrganizer.Storage.Local
                 }
 
                 await this.FileMover.MoveAsync(moverOptions, file, destinationPath);
-                progress.Report(file);
+                counter++;
+                //progress.Report(file);
+                progress.Report($"{counter} out of {totalFiles} files moved.");
             }
 
-            await Task.WhenAll(moveTasks);
             this.Logger.LogInformation("Finished moving files");
         }
 

@@ -11,7 +11,7 @@ namespace MediaOrganizer.Storage.Local
         {
         }
 
-        public IEnumerable<string> GetFilesAsync(string root)
+        public IEnumerable<string> GetFiles(string root)
         {
             if (root == null)
             {
