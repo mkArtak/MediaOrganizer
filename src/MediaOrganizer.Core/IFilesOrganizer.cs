@@ -6,6 +6,6 @@ namespace MediaOrganizer.Core
 {
     public interface IFilesOrganizer
     {
-        Task OrganizeAsync(IProgress<string> progress, CancellationToken token);
+        Task OrganizeAsync(IProgress<ProgressInfo> progress, CancellationToken token);
     }
 }

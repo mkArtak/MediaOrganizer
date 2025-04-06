@@ -26,7 +26,7 @@
 
         <StackPanel Orientation="Vertical" Grid.Row="1" Visibility="{Binding IsRunning, Converter={StaticResource cvBoolenToVisibilityConverter}}">
             <Label x:Name="lblProcessedCount" Content="{Binding CurrentFile}" />
-            <ProgressBar x:Name="prgProgress" Height="20" IsIndeterminate="True"  />
+            <ProgressBar x:Name="prgProgress" Height="20" Minimum="0" Maximum="100" IsIndeterminate="False" Value="{Binding TotalProgress, Mode=OneWay}" />
         </StackPanel>
 
         <Button x:Name="btnStart" Content="Start..." Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0, 3, 0 ,3"  Width="100" Command="{Binding OrganizeFilesCommand}" />

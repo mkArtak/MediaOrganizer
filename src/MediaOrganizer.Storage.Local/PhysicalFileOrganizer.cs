@@ -29,7 +29,7 @@ namespace MediaOrganizer.Storage.Local
             this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task OrganizeAsync(IProgress<string> progress, CancellationToken token)
+        public async Task OrganizeAsync(IProgress<ProgressInfo> progress, CancellationToken token)
         {
             if (token.IsCancellationRequested)
                 return;
@@ -46,7 +46,7 @@ namespace MediaOrganizer.Storage.Local
             foreach (string file in files)
             {
                 if (token.IsCancellationRequested)
-                    return;
+                    break;
 
                 var destinationPath = this.Mapper.GetDestination(file);
                 if (destinationPath == null)
@@ -57,8 +57,7 @@ namespace MediaOrganizer.Storage.Local
 
                 await this.FileMover.MoveAsync(moverOptions, file, destinationPath);
                 counter++;
-                //progress.Report(file);
-                progress.Report($"{counter} out of {totalFiles} files moved.");
+                progress.Report(new ProgressInfo(file, totalFiles, counter));
             }
 
             this.Logger.LogInformation("Finished moving files");

@@ -1,4 +1,5 @@
-﻿using MediaOrganizer.Storage.Local;
+﻿using MediaOrganizer.Core;
+using MediaOrganizer.Storage.Local;
 using Microsoft.Extensions.Logging;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -17,8 +18,10 @@ namespace MediaOrganizer.ViewModels
         private readonly PhysicalFilesOrganizerFactory organizerFactory;
 
         private CancellationTokenSource cancellationToken;
-        private readonly Progress<string> progress;
+        private Task organizerTask;
+        private readonly Progress<ProgressInfo> progress;
         private ILogger<FileOrganizerViewModel> logger;
+        private int totalProgress = 0;
 
         public FileOrganizerOptionsViewModel Options { get; } = new FileOrganizerOptionsViewModel() { VideoSubfolderName = "Movies", PhotosSubfolderName = "Photos" };
 
@@ -36,13 +39,26 @@ namespace MediaOrganizer.ViewModels
             set => SetProperty(ref this.currentFile, value);
         }
 
+        public int TotalProgress
+        {
+            get => this.totalProgress;
+            set => SetProperty(ref this.totalProgress, value);
+        }
+
         public FileOrganizerViewModel() : base()
         {
-            this.OrganizeFilesCommand = new DelegateCommand(async () => await Organize(), () => !this.IsRunning);
+            this.OrganizeFilesCommand = new DelegateCommand(async () =>
+            {
+                if (this.IsRunning)
+                    this.cancellationToken.Cancel();
+                else
+                    this.organizerTask = Organize();
+            }
+            , () => !this.IsRunning);
 
             this.logger = ApplicationLogging.CreateLogger<FileOrganizerViewModel>();
             this.organizerFactory = new PhysicalFilesOrganizerFactory(this.logger);
-            this.progress = new Progress<string>(ReportProgress);
+            this.progress = new Progress<ProgressInfo>(ReportProgress);
         }
 
         private async Task Organize()
@@ -78,10 +94,11 @@ namespace MediaOrganizer.ViewModels
             await organizer.OrganizeAsync(progress, this.cancellationToken.Token);
         }
 
-        private void ReportProgress(string sourceFilePath)
+        private void ReportProgress(ProgressInfo progressInfo)
         {
-            this.logger.LogInformation(sourceFilePath);
-            this.CurrentFile = sourceFilePath;
+            this.logger.LogInformation(progressInfo.FileName);
+            this.CurrentFile = progressInfo.FileName;
+            this.TotalProgress = progressInfo.CurrentFileIndex * 100 / progressInfo.TotalFiles;
         }
 
         internal static class ApplicationLogging
