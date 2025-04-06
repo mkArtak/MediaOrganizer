@@ -5,9 +5,11 @@
         prism:ViewModelLocator.AutoWireViewModel="False"
         xmlns:uc="clr-namespace:MediaOrganizer.Views"
         xmlns:vm ="clr-namespace:MediaOrganizer.ViewModels"
+        xmlns:cv="clr-namespace:MediaOrganizer.Converters"
         Title="Media Organizer" Height="230" MaxHeight="250" Width="525">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter"/>
+        <cv:BooleanToTextConverter x:Key="cvBooleanToTextConverter" />
     </Window.Resources>
     <Window.DataContext>
         <vm:FileOrganizerViewModel />
@@ -29,6 +31,6 @@
             <ProgressBar x:Name="prgProgress" Height="20" Minimum="0" Maximum="100" IsIndeterminate="False" Value="{Binding TotalProgress, Mode=OneWay}" />
         </StackPanel>
 
-        <Button x:Name="btnStart" Content="Start..." Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0, 3, 0 ,3"  Width="100" Command="{Binding OrganizeFilesCommand}" />
+        <Button x:Name="btnStart" Content="{Binding IsRunning, Converter={StaticResource cvBooleanToTextConverter}}" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0, 3, 0 ,3"  Width="100" Command="{Binding OrganizeFilesCommand}" />
     </Grid>
 </Window>

@@ -53,8 +53,7 @@ namespace MediaOrganizer.ViewModels
                     this.cancellationToken.Cancel();
                 else
                     this.organizerTask = Organize();
-            }
-            , () => !this.IsRunning);
+            });
 
             this.logger = ApplicationLogging.CreateLogger<FileOrganizerViewModel>();
             this.organizerFactory = new PhysicalFilesOrganizerFactory(this.logger);
