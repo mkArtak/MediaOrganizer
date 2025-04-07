@@ -18,11 +18,19 @@ namespace MediaOrganizer.Storage.Local
 
         private FilesOrganizerOptions Options { get; }
 
+        private FileMoverOptions MoverOptions { get; }
+
         private ILogger Logger { get; }
 
         public PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, ILogger logger)
         {
             this.Options = options ?? throw new ArgumentNullException(nameof(options));
+            this.MoverOptions = new FileMoverOptions
+            {
+                RemoveSourceAfterMove = options.RemoveSource,
+                SkipIfFileExists = options.SkipExistingFiles
+            };
+
             this.FileMover = mover ?? throw new ArgumentNullException(nameof(mover));
             this.FileEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
             this.Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -36,7 +44,6 @@ namespace MediaOrganizer.Storage.Local
 
             this.Logger.LogInformation($"Preparing to move files from {this.Options.SourceRoot} to {this.Options.DestinationRoot}");
 
-            var moverOptions = new FileMoverOptions { RemoveSourceAfterMove = this.Options.RemoveSource };
             CreateDestinationIfNotExist(this.Options.DestinationRoot);
 
             var counter = 0;
@@ -55,7 +62,7 @@ namespace MediaOrganizer.Storage.Local
                     continue;
                 }
 
-                await this.FileMover.MoveAsync(moverOptions, file, destinationPath);
+                await this.FileMover.MoveAsync(this.MoverOptions, file, destinationPath);
                 counter++;
                 progress.Report(new ProgressInfo(file, totalFiles, counter));
             }

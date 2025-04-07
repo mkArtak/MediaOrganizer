@@ -6,7 +6,7 @@ namespace MediaOrganizer.Core
     {
         public string[] VideoFileFormatPatterns { get; } = new[] { ".mov", ".mp4", ".avi", ".3gp", ".mpg" };
 
-        public string[] ImageFileFormatPatterns { get; } = new[] { ".jpg", ".jpeg" };
+        public string[] ImageFileFormatPatterns { get; } = new[] { ".jpg", ".jpeg", ".png" };
 
         public string VideoSubfolderName { get; set; }
 
