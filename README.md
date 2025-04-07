@@ -50,16 +50,18 @@ Here’s what the app looks like:
 
 ## 🛠 Destination Pattern Tokens
 
+The media will be organized under two root folders (Movies and Photos), following a pattern defined by the user.
+The default pattern has the following form: `{Year}/{MonthName}/{Year}-{Month}-{Day}`
 You can use the following tokens to define your folder structure:
 
-| Token         | Description            |
-|---------------|------------------------|
-| `{Year}`      | Year media was taken   |
-| `{Month}`     | Month number (01–12)   |
-| `{MonthName}` | Full month name        |
-| `{Day}`       | Day of the month       |
+| Token         | Description                                       |
+|---------------|---------------------------------------------------|
+| `{Year}`      | Year media was taken (..., 2010, 2025, ...)       |
+| `{Month}`     | Month (01, 02, ... 12)                            |
+| `{MonthName}` | Full month name (January, February, ... December) |
+| `{Day}`       | Day of the month (01, 02, ... 31)                 |
 
-Example:  
+**Example**  
 `{Year}/{MonthName}/{Year}-{Month}-{Day}`  
 would create folders like:  
 `2023/June/2023-06-15/IMG_1234.JPG`
