@@ -17,6 +17,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -29,13 +31,19 @@
         <TextBlock Grid.Row="1" Text="Destination Root:" HorizontalAlignment="Left" Margin="0, 3" />
         <TextBox ToolTip="The root folder under which all the media should be organized"  Text="{Binding Path=DestinationRoot, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Margin="6, 3, 0, 0"/>
 
-        <TextBlock Grid.Row="2" Text="Destination pattern: " HorizontalAlignment="Left" Margin="0, 3" />
-        <TextBox ToolTip="The relative path pattern used to calculate target folder for each file" Text="{Binding Path=DestinationPattern, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Margin="6, 3, 0, 0" />
+        <TextBlock Grid.Row="2" Text="Movies Root Folder name: " HorizontalAlignment="Left" Margin="0,3" />
+        <TextBox ToolTip="The name of the folder under which all the movies should be organized" Text="{Binding Path=VideoSubfolderName, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Margin="6, 3, 0, 0"/>
 
-        <TextBlock Grid.Row="3" Text="Delete on move: " HorizontalAlignment="Left" Margin="0, 3" />
-        <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding Path=RemoveSource, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
-        
-        <TextBlock Grid.Row="4" Text="Skip existing files: " HorizontalAlignment="Left" Margin="0, 3" />
-        <CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{Binding Path=SkipExistingFiles, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
+        <TextBlock Grid.Row="3" Text="Photos root folder name: " HorizontalAlignment="Left" Margin="0, 3" />
+        <TextBox ToolTip="The name of the folder under which all the photos should be organized" Text="{Binding Path=PhotosSubfolderName, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" Margin="6, 3, 0, 0"/>
+
+        <TextBlock Grid.Row="4" Text="Destination pattern: " HorizontalAlignment="Left" Margin="0, 3" />
+        <TextBox ToolTip="The relative path pattern used to calculate target folder for each file" Text="{Binding Path=DestinationPattern, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Margin="6, 3, 0, 0" />
+
+        <TextBlock Grid.Row="5" Text="Delete on move: " HorizontalAlignment="Left" Margin="0, 3" />
+        <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding Path=RemoveSource, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
+
+        <TextBlock Grid.Row="6" Text="Skip existing files: " HorizontalAlignment="Left" Margin="0, 3" />
+        <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding Path=SkipExistingFiles, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
     </Grid>
 </UserControl>
