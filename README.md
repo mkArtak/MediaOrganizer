@@ -10,10 +10,12 @@ It scans your media files and organizes them into folders based on their metadat
 
 Here’s what the app looks like:
 
-![Media Organizer screenshot](https://github.com/user-attachments/assets/4994c9b8-62b2-4b8c-b1f6-e8b6cae6114f)
+![Media Organizer screenshot](https://github.com/user-attachments/assets/2560a563-8fd1-4898-a22a-43be96ad32dd)
 
 - **Source Root**: Folder where your messy media lives  
-- **Destination Root**: Folder where the organized magic happens  
+- **Destination Root**: Folder where the organized magic happens
+- **Movies root folder name**: The name of the root folder under which the photos will be organized
+- **Photos root folder name**: The name of the root folder under which the photos will be organized
 - **Destination Pattern**: Customize your folder structure (e.g. by year, month, day)  
 - **Delete on Move**: If checked, files will be *moved* (not copied)  
 - **Skip Existing Files**: Prevent overwriting if files already exist  
