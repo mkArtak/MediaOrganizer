@@ -21,7 +21,7 @@ This will build the project and produce the app under the `bin/debug` folder of 
 
 The app comes in two forms (for now): a command-line utility and a desktop application to run on a Windows PC.
 
-# Command line utility
+## Command line utility
 The MediaOrganizer.CLI project will build the command-line utillity that you can use for organizing your media library.
 Here is the quick guide for the options you can use:
 
