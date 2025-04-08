@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.35906.104 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer", "MediaOrganizer\MediaOrganizer.csproj", "{661FAA87-974F-4E0C-8B22-618B99359945}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Storage.Local", "MediaOrganizer.Storage.Local\MediaOrganizer.Storage.Local.csproj", "{4EDC4173-C114-4A97-9AC9-284300876A73}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Service", "MediaOrganizer.Service\MediaOrganizer.Service.csproj", "{98E7CD7B-9422-467A-A098-E52BB3C47F02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganizer.CLI", "MediaOrganizer.CLI\MediaOrganizer.CLI.csproj", "{8C55C01D-AD2E-4914-BB54-FEC5A123FD30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{98E7CD7B-9422-467A-A098-E52BB3C47F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98E7CD7B-9422-467A-A098-E52BB3C47F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98E7CD7B-9422-467A-A098-E52BB3C47F02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C55C01D-AD2E-4914-BB54-FEC5A123FD30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C55C01D-AD2E-4914-BB54-FEC5A123FD30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C55C01D-AD2E-4914-BB54-FEC5A123FD30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C55C01D-AD2E-4914-BB54-FEC5A123FD30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

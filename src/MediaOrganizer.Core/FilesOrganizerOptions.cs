@@ -4,13 +4,23 @@ namespace MediaOrganizer.Core
 {
     public class FilesOrganizerOptions
     {
-        public string[] VideoFileFormatPatterns { get; } = new[] { ".mov", ".mp4", ".avi", ".3gp", ".mpg" };
+        public static readonly string DefaultVideoSubfolderName = "Movies";
 
-        public string[] ImageFileFormatPatterns { get; } = new[] { ".jpg", ".jpeg", ".png" };
+        public static readonly string DefaultPhotosSubfolderName = "Photos";
 
-        public string VideoSubfolderName { get; set; }
+        public static readonly string DefaultDestinationPattern = "{Year}/{MonthName}/{Year}-{Month}-{Day}";
 
-        public string PhotosSubfolderName { get; set; }
+        public static readonly string[] DefaultVideoFileFormatPatterns = { ".mov", ".mp4", ".avi", ".3gp", ".mpg" };
+
+        public static readonly string[] DefaultPhotoFileFormatPatterns = { ".jpg", ".jpeg", ".png" };
+
+        public string[] VideoFileFormatPatterns { get; set; } = DefaultVideoFileFormatPatterns;
+
+        public string[] ImageFileFormatPatterns { get; set; } = DefaultPhotoFileFormatPatterns;
+
+        public string VideoSubfolderName { get; set; } = DefaultVideoSubfolderName;
+
+        public string PhotosSubfolderName { get; set; } = DefaultPhotosSubfolderName;
 
         public string SourceRoot { get; set; }
 
@@ -20,7 +30,7 @@ namespace MediaOrganizer.Core
 
         public bool SkipExistingFiles { get; set; }
 
-        public string DestinationPattern { get; set; }
+        public string DestinationPattern { get; set; } = DefaultDestinationPattern;
 
         public override string ToString()
         {

@@ -5,8 +5,8 @@ namespace MediaOrganizer.ViewModels
 {
     public class FileOrganizerOptionsViewModel : BindableBase
     {
-        private string videoSubfolderName = "Movies";
-        private string photosSubfolderName = "Photos";
+        private string videoSubfolderName = FilesOrganizerOptions.DefaultVideoSubfolderName;
+        private string photosSubfolderName = FilesOrganizerOptions.DefaultPhotosSubfolderName;
         private string sourceRoot;
         private string destinationRoot;
         private bool removeSource;
