@@ -6,7 +6,7 @@
         xmlns:uc="clr-namespace:MediaOrganizer.Views"
         xmlns:vm ="clr-namespace:MediaOrganizer.ViewModels"
         xmlns:cv="clr-namespace:MediaOrganizer.Converters"
-        Title="Media Organizer" Height="270" MaxHeight="300" Width="525">
+        Title="Media Organizer" Height="270" MaxHeight="300" Width="525" MinWidth="450" MinHeight="250">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter"/>
         <cv:BooleanToTextConverter x:Key="cvBooleanToTextConverter" />
@@ -22,9 +22,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <GroupBox Header="Options">
-            <uc:FileOrganizerOptionsView DataContext="{Binding Options}" />
-        </GroupBox>
+        <uc:FileOrganizerOptionsView DataContext="{Binding Options}" />
 
         <StackPanel Orientation="Vertical" Grid.Row="1" Visibility="{Binding IsRunning, Converter={StaticResource cvBoolenToVisibilityConverter}}">
             <Label x:Name="lblProcessedCount" Content="{Binding CurrentFile}" />
