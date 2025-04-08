@@ -8,6 +8,7 @@
 		<PublishSingleFile>true</PublishSingleFile>
 		<SelfContained>true</SelfContained>
 		<PublishAot>true</PublishAot>
+		<ApplicationIcon>..\..\Resources\Icons\icon.64.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>

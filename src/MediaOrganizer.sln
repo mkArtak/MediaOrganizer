@@ -13,6 +13,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaOrganizer.Service", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaOrganizer.CLI", "MediaOrganizer.CLI\MediaOrganizer.CLI.csproj", "{8C55C01D-AD2E-4914-BB54-FEC5A123FD30}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{AE04D8FF-C1E1-4E06-8F3A-D3CF1EE676D4}"
+	ProjectSection(SolutionItems) = preProject
+		..\Resources\Icons\icon.256.png = ..\Resources\Icons\icon.256.png
+		..\Resources\Icons\icon.64.ico = ..\Resources\Icons\icon.64.ico
+		..\Resources\Icons\icon.64.png = ..\Resources\Icons\icon.64.png
+		..\Resources\Icons\icon.main.png = ..\Resources\Icons\icon.main.png
+		..\Resources\Icons\icon.png = ..\Resources\Icons\icon.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +53,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AE04D8FF-C1E1-4E06-8F3A-D3CF1EE676D4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B2FB807-9F11-4144-96FD-2F66CC891C44}
