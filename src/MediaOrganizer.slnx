@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Resources/" />
+  <Folder Name="/Resources/Icons/">
+    <File Path="../Resources/Icons/icon.256.png" />
+    <File Path="../Resources/Icons/icon.64.ico" />
+    <File Path="../Resources/Icons/icon.64.png" />
+    <File Path="../Resources/Icons/icon.main.png" />
+    <File Path="../Resources/Icons/icon.png" />
+  </Folder>
+  <Project Path="MediaOrganizer.CLI/MediaOrganizer.CLI.csproj" />
+  <Project Path="MediaOrganizer.Core/MediaOrganizer.Core.csproj" />
+  <Project Path="MediaOrganizer.Service/MediaOrganizer.Service.csproj" />
+  <Project Path="MediaOrganizer.Storage.Local/MediaOrganizer.Storage.Local.csproj" />
+  <Project Path="MediaOrganizer/MediaOrganizer.csproj" />
+</Solution>
