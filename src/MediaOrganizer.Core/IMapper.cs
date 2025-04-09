@@ -1,7 +1,6 @@
-﻿namespace MediaOrganizer.Core
+﻿namespace MediaOrganizer.Core;
+
+public interface IMapper
 {
-    public interface IMapper
-    {
-        string GetDestination(string source);
-    }
+    bool TryGetDestination(string source, out string destination);
 }

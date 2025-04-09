@@ -15,7 +15,7 @@ namespace MediaOrganizer.Storage.Local
 
         public IFilesOrganizer Create(FilesOrganizerOptions options)
         {
-            var mapper = new PatternBasedPathMapper(options);
+            var mapper = new MediaFileMapper(options);
             var fileMover = new PhysicalFileMover(this.logger);
             var enumerator = new PhysicalFileEnumerator();
 
