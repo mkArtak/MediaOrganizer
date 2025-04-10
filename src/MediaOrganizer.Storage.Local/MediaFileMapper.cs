@@ -1,4 +1,5 @@
 ﻿using MediaOrganizer.Core;
+using System.IO;
 
 namespace MediaOrganizer.Storage.Local;
 
@@ -9,8 +10,8 @@ internal class MediaFileMapper : IMapper
 
     public MediaFileMapper(FilesOrganizerOptions options)
     {
-        this.imageMapper = new GenericFileMapper(options.ImageFileFormatPatterns, options.DestinationRoot, options.DestinationPattern);
-        this.videoMapper = new GenericFileMapper(options.VideoFileFormatPatterns, options.DestinationRoot, options.DestinationPattern);
+        this.imageMapper = new GenericFileMapper(options.ImageFileFormatPatterns, Path.Combine(options.DestinationRoot, options.PhotosSubfolderName), options.DestinationPattern);
+        this.videoMapper = new GenericFileMapper(options.VideoFileFormatPatterns, Path.Combine(options.DestinationRoot, options.VideoSubfolderName), options.DestinationPattern);
     }
 
     public bool TryGetDestination(string source, out string destination)
