@@ -2,7 +2,6 @@
 using MediaOrganizer.Storage.Local.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,8 @@ namespace MediaOrganizer.Storage.Local;
 
 internal sealed class PhysicalFileOrganizer : IFilesOrganizer
 {
+    private readonly Action<string> createDirectoryIfNotExistHandler;
+
     private IFileMover FileMover { get; }
 
     private IFileEnumerator FileEnumerator { get; }
@@ -23,7 +24,11 @@ internal sealed class PhysicalFileOrganizer : IFilesOrganizer
 
     private ILogger Logger { get; }
 
-    public PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, ILogger logger)
+    public PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, ILogger logger) : this(options, mover, enumerator, mapper, FileSystemExtensions.CreateDirectoryIfNotExists, logger)
+    {
+    }
+
+    internal PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, Action<string> createDirectoryIfNotExistHandler, ILogger logger)
     {
         this.Options = options ?? throw new ArgumentNullException(nameof(options));
         this.MoverOptions = new FileMoverOptions
@@ -36,6 +41,7 @@ internal sealed class PhysicalFileOrganizer : IFilesOrganizer
         this.FileEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
         this.Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.createDirectoryIfNotExistHandler = createDirectoryIfNotExistHandler ?? throw new ArgumentNullException(nameof(createDirectoryIfNotExistHandler));
     }
 
     public async Task OrganizeAsync(IProgress<ProgressInfo> progress, CancellationToken token)

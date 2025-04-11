@@ -3,22 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MediaOrganizer.Storage.Local
+namespace MediaOrganizer.Storage.Local;
+
+public sealed class PhysicalFileEnumerator : IFileEnumerator
 {
-    public sealed class PhysicalFileEnumerator : IFileEnumerator
+    public PhysicalFileEnumerator()
     {
-        public PhysicalFileEnumerator()
+    }
+
+    public IEnumerable<string> GetFiles(string root)
+    {
+        if (root == null)
         {
+            throw new ArgumentNullException(nameof(root));
         }
 
-        public IEnumerable<string> GetFiles(string root)
-        {
-            if (root == null)
-            {
-                throw new ArgumentNullException(nameof(root));
-            }
-
-            return Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories);
-        }
+        return Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories);
     }
 }

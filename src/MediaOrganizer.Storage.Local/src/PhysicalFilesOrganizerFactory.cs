@@ -2,24 +2,23 @@
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace MediaOrganizer.Storage.Local
+namespace MediaOrganizer.Storage.Local;
+
+public class PhysicalFilesOrganizerFactory
 {
-    public class PhysicalFilesOrganizerFactory
+    private ILogger logger;
+
+    public PhysicalFilesOrganizerFactory(ILogger logger)
     {
-        private ILogger logger;
+        this.logger = logger ?? throw new ArgumentException(nameof(logger));
+    }
 
-        public PhysicalFilesOrganizerFactory(ILogger logger)
-        {
-            this.logger = logger ?? throw new ArgumentException(nameof(logger));
-        }
+    public IFilesOrganizer Create(FilesOrganizerOptions options)
+    {
+        var mapper = new MediaFileMapper(options);
+        var fileMover = new PhysicalFileMover(this.logger);
+        var enumerator = new PhysicalFileEnumerator();
 
-        public IFilesOrganizer Create(FilesOrganizerOptions options)
-        {
-            var mapper = new MediaFileMapper(options);
-            var fileMover = new PhysicalFileMover(this.logger);
-            var enumerator = new PhysicalFileEnumerator();
-
-            return new PhysicalFileOrganizer(options, fileMover, enumerator, mapper, this.logger);
-        }
+        return new PhysicalFileOrganizer(options, fileMover, enumerator, mapper, this.logger);
     }
 }
