@@ -8,7 +8,7 @@
 		<PublishSingleFile>true</PublishSingleFile>
 		<SelfContained>true</SelfContained>
 		<PublishAot>true</PublishAot>
-		<ApplicationIcon>..\..\Resources\Icons\icon.64.ico</ApplicationIcon>
+		<ApplicationIcon>..\..\..\Resources\Icons\icon.64.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,8 +17,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\MediaOrganizer.Core\MediaOrganizer.Core.csproj" />
-		<ProjectReference Include="..\MediaOrganizer.Storage.Local\MediaOrganizer.Storage.Local.csproj" />
+		<ProjectReference Include="..\..\MediaOrganizer.Core\src\MediaOrganizer.Core.csproj" />
+		<ProjectReference Include="..\..\MediaOrganizer.Storage.Local\src\MediaOrganizer.Storage.Local.csproj" />
 	</ItemGroup>
 
 </Project>

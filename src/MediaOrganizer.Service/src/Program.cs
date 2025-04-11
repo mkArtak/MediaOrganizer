@@ -1,5 +1,8 @@
 using MediaOrganizer.Core;
 using MediaOrganizer.Service;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddLocalStorageServices();

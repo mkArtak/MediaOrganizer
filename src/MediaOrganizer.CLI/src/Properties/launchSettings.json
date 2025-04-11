@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MediaOrganizer.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "--source C:\\Test\\Unsorted --destination C:\\Test\\Sorted"
+    }
+  }
+}
