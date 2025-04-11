@@ -1,4 +1,5 @@
 ﻿using MediaOrganizer.Core;
+using MediaOrganizer.Storage.Local.Extensions;
 using System;
 using System.IO;
 using System.Linq;
@@ -31,10 +32,8 @@ public class GenericFileMapper : IMapper
         var dateTaken = info.CreationTimeUtc > info.LastWriteTimeUtc ? info.LastWriteTimeUtc : info.CreationTimeUtc;
         string relativePath = GetRelativeDestinationFolder(dateTaken);
         string destinationDirectory = Path.Combine(this.destinationRoot, relativePath);
-        if (!Directory.Exists(destinationDirectory))
-        {
-            Directory.CreateDirectory(destinationDirectory);
-        }
+
+        FileSystemExtensions.CreateDirectoryIfNotExists(destinationDirectory);
 
         destination = Path.Combine(destinationDirectory, info.Name);
         return true;

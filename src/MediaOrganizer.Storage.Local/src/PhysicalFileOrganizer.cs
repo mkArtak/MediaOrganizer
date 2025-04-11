@@ -1,4 +1,5 @@
 ﻿using MediaOrganizer.Core;
+using MediaOrganizer.Storage.Local.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
@@ -44,7 +45,7 @@ internal sealed class PhysicalFileOrganizer : IFilesOrganizer
 
         this.Logger.LogInformation($"Preparing to move files from {this.Options.SourceRoot} to {this.Options.DestinationRoot}");
 
-        CreateDestinationIfNotExist(this.Options.DestinationRoot);
+        FileSystemExtensions.CreateDirectoryIfNotExists(this.Options.SourceRoot);
 
         var counter = 0;
         var files = this.FileEnumerator.GetFiles(this.Options.SourceRoot);
@@ -67,13 +68,5 @@ internal sealed class PhysicalFileOrganizer : IFilesOrganizer
         }
 
         this.Logger.LogInformation("Finished moving files");
-    }
-
-    private void CreateDestinationIfNotExist(string destinationRoot)
-    {
-        if (!Directory.Exists(destinationRoot))
-        {
-            Directory.CreateDirectory(destinationRoot);
-        }
     }
 }

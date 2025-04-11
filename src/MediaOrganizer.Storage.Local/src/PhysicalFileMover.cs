@@ -9,9 +9,17 @@ namespace MediaOrganizer.Storage.Local
     internal sealed class PhysicalFileMover : IFileMover
     {
         private readonly ILogger logger;
+        private readonly Action<string, string> moveHandler;
+        private readonly Action<string, string> copyHandler;
 
-        public PhysicalFileMover(ILogger logger)
+        public PhysicalFileMover(ILogger logger) : this(File.Copy, File.Move, logger)
         {
+        }
+
+        internal PhysicalFileMover(Action<string, string> copyHandler, Action<string, string> moveHandler, ILogger logger)
+        {
+            this.moveHandler = moveHandler ?? throw new ArgumentNullException(nameof(moveHandler));
+            this.copyHandler = copyHandler ?? throw new ArgumentNullException(nameof(copyHandler));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -39,12 +47,12 @@ namespace MediaOrganizer.Storage.Local
                     if (options.RemoveSourceAfterMove)
                     {
                         this.logger.LogInformation($"Moving {from} to {to}");
-                        File.Move(from, to);
+                        this.moveHandler(from, to);
                     }
                     else
                     {
                         this.logger.LogInformation($"Copying {from} to {to}");
-                        File.Copy(from, to);
+                        this.copyHandler(from, to);
                     }
                 }
                 catch (Exception ex)
