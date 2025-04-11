@@ -10,7 +10,7 @@ public class GenericFileMapper : IMapper
     private readonly string[] patterns;
     private readonly string destinationRoot;
     private static readonly string[] monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    private string destinationFolderPattern;
+    private readonly string destinationFolderPattern;
 
     public GenericFileMapper(string[] patterns, string destinationRoot, string destinationPattern)
     {
@@ -40,7 +40,7 @@ public class GenericFileMapper : IMapper
         return true;
     }
 
-    private string GetRelativeDestinationFolder(DateTime dateTaken)
+    internal string GetRelativeDestinationFolder(DateTime dateTaken)
     {
         return destinationFolderPattern
                     .Replace("{Year}", dateTaken.Year.ToString(), StringComparison.OrdinalIgnoreCase)
@@ -49,7 +49,7 @@ public class GenericFileMapper : IMapper
                     .Replace("{Day}", dateTaken.Day.ToString("D2"), StringComparison.OrdinalIgnoreCase);
     }
 
-    private bool IsFileMappable(string filename)
+    internal bool IsFileMappable(string filename)
     {
         string extension = Path.GetExtension(filename).ToLowerInvariant();
         return this.patterns.Contains(extension);

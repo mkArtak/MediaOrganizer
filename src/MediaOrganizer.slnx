@@ -1,15 +1,20 @@
 <Solution>
   <Folder Name="/Resources/" />
-  <Folder Name="/Resources/Icons/">
+  <Folder Name="/Resources/Icons/" Id="f830d673-460d-79d0-d57d-54408f02cf19">
     <File Path="../Resources/Icons/icon.256.png" />
     <File Path="../Resources/Icons/icon.64.ico" />
     <File Path="../Resources/Icons/icon.64.png" />
     <File Path="../Resources/Icons/icon.main.png" />
     <File Path="../Resources/Icons/icon.png" />
   </Folder>
-  <Project Path="MediaOrganizer.CLI/src/MediaOrganizer.CLI.csproj" />
-  <Project Path="MediaOrganizer.Core/src/MediaOrganizer.Core.csproj" />
-  <Project Path="MediaOrganizer.Service/src/MediaOrganizer.Service.csproj" />
-  <Project Path="MediaOrganizer.Storage.Local/src/MediaOrganizer.Storage.Local.csproj" />
-  <Project Path="MediaOrganizer/src/MediaOrganizer.csproj" />
+  <Folder Name="/src/" Id="02ea681e-c7d8-13c7-8484-4ac65e1b71e8">
+    <Project Path="MediaOrganizer.CLI/src/MediaOrganizer.CLI.csproj" />
+    <Project Path="MediaOrganizer.Core/src/MediaOrganizer.Core.csproj" />
+    <Project Path="MediaOrganizer.Service/src/MediaOrganizer.Service.csproj" />
+    <Project Path="MediaOrganizer.Storage.Local/src/MediaOrganizer.Storage.Local.csproj" />
+    <Project Path="MediaOrganizer/src/MediaOrganizer.csproj" />
+  </Folder>
+  <Folder Name="/test/" Id="ee985b03-4083-4537-abae-16e47c5f3b3b">
+    <Project Path="MediaOrganizer.Storage.Local/test/MediaOrganizer.Storage.Local.Tests/MediaOrganizer.Storage.Local.Tests.csproj" Id="c08d9470-b326-4151-b9c1-cec547a6740e" />
+  </Folder>
 </Solution>
