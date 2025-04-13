@@ -8,113 +8,112 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MediaOrganizer.ViewModels
+namespace MediaOrganizer.ViewModels;
+
+public class FileOrganizerViewModel : BindableBase
 {
-    public class FileOrganizerViewModel : BindableBase
+    public bool isRunning;
+    private string currentFile;
+
+    private readonly PhysicalFilesOrganizerFactory organizerFactory;
+
+    private CancellationTokenSource cancellationToken;
+    private Task organizerTask;
+    private readonly Progress<ProgressInfo> progress;
+    private ILogger<FileOrganizerViewModel> logger;
+    private int totalProgress = 0;
+
+    public FileOrganizerOptionsViewModel Options { get; } = new FileOrganizerOptionsViewModel() { VideoSubfolderName = "Movies", PhotosSubfolderName = "Photos" };
+
+    public DelegateCommand OrganizeFilesCommand { get; init; }
+
+    public bool IsRunning
     {
-        public bool isRunning;
-        private string currentFile;
+        get => this.isRunning;
+        set { SetProperty(ref this.isRunning, value); }
+    }
 
-        private readonly PhysicalFilesOrganizerFactory organizerFactory;
+    public string CurrentFile
+    {
+        get => this.currentFile;
+        set => SetProperty(ref this.currentFile, value);
+    }
 
-        private CancellationTokenSource cancellationToken;
-        private Task organizerTask;
-        private readonly Progress<ProgressInfo> progress;
-        private ILogger<FileOrganizerViewModel> logger;
-        private int totalProgress = 0;
+    public int TotalProgress
+    {
+        get => this.totalProgress;
+        set => SetProperty(ref this.totalProgress, value);
+    }
 
-        public FileOrganizerOptionsViewModel Options { get; } = new FileOrganizerOptionsViewModel() { VideoSubfolderName = "Movies", PhotosSubfolderName = "Photos" };
-
-        public DelegateCommand OrganizeFilesCommand { get; private set; }
-
-        public bool IsRunning
+    public FileOrganizerViewModel() : base()
+    {
+        this.OrganizeFilesCommand = new DelegateCommand(async () =>
         {
-            get => this.isRunning;
-            set { SetProperty(ref this.isRunning, value); }
+            if (this.IsRunning)
+                this.cancellationToken.Cancel();
+            else
+                this.organizerTask = Organize();
+        });
+
+        this.logger = ApplicationLogging.CreateLogger<FileOrganizerViewModel>();
+        this.organizerFactory = new PhysicalFilesOrganizerFactory(this.logger);
+        this.progress = new Progress<ProgressInfo>(ReportProgress);
+    }
+
+    private async Task Organize()
+    {
+        this.IsRunning = true;
+
+        try
+        {
+            this.cancellationToken?.Cancel();
+            this.cancellationToken?.Dispose();
+            this.cancellationToken = new CancellationTokenSource();
+
+            await OrganizeFilesByDatesAndTypes();
+        }
+        finally
+        {
+            this.IsRunning = false;
+            this.CurrentFile = null;
+
+            this.cancellationToken.Dispose();
+            this.cancellationToken = null;
+        }
+    }
+
+    private async Task OrganizeFilesByDatesAndTypes()
+    {
+        if (!Directory.Exists(this.Options.SourceRoot))
+        {
+            throw new DirectoryNotFoundException("Source not found");
         }
 
-        public string CurrentFile
-        {
-            get => this.currentFile;
-            set => SetProperty(ref this.currentFile, value);
-        }
+        var organizer = this.organizerFactory.Create(this.Options.GetOptions());
+        await organizer.OrganizeAsync(progress, this.cancellationToken.Token);
+    }
 
-        public int TotalProgress
-        {
-            get => this.totalProgress;
-            set => SetProperty(ref this.totalProgress, value);
-        }
+    private void ReportProgress(ProgressInfo progressInfo)
+    {
+        this.logger.LogInformation(progressInfo.FileName);
+        this.CurrentFile = progressInfo.FileName;
+        this.TotalProgress = progressInfo.CurrentFileIndex * 100 / progressInfo.TotalFiles;
+    }
 
-        public FileOrganizerViewModel() : base()
+    internal static class ApplicationLogging
+    {
+        public static ILoggerFactory LogFactory { get; } = LoggerFactory.Create(builder =>
         {
-            this.OrganizeFilesCommand = new DelegateCommand(async () =>
+            builder.ClearProviders();
+            // Clear Microsoft's default providers (like event logs and others)
+            builder.AddSimpleConsole(options =>
             {
-                if (this.IsRunning)
-                    this.cancellationToken.Cancel();
-                else
-                    this.organizerTask = Organize();
-            });
+                options.IncludeScopes = true;
+                options.SingleLine = true;
+                options.TimestampFormat = "hh:mm:ss ";
+            }).AddDebug().SetMinimumLevel(LogLevel.Information);
+        });
 
-            this.logger = ApplicationLogging.CreateLogger<FileOrganizerViewModel>();
-            this.organizerFactory = new PhysicalFilesOrganizerFactory(this.logger);
-            this.progress = new Progress<ProgressInfo>(ReportProgress);
-        }
-
-        private async Task Organize()
-        {
-            this.IsRunning = true;
-
-            try
-            {
-                this.cancellationToken?.Cancel();
-                this.cancellationToken?.Dispose();
-                this.cancellationToken = new CancellationTokenSource();
-
-                await OrganizeFilesByDatesAndTypes();
-            }
-            finally
-            {
-                this.IsRunning = false;
-                this.CurrentFile = null;
-
-                this.cancellationToken.Dispose();
-                this.cancellationToken = null;
-            }
-        }
-
-        private async Task OrganizeFilesByDatesAndTypes()
-        {
-            if (!Directory.Exists(this.Options.SourceRoot))
-            {
-                throw new DirectoryNotFoundException("Source not found");
-            }
-
-            var organizer = this.organizerFactory.Create(this.Options.GetOptions());
-            await organizer.OrganizeAsync(progress, this.cancellationToken.Token);
-        }
-
-        private void ReportProgress(ProgressInfo progressInfo)
-        {
-            this.logger.LogInformation(progressInfo.FileName);
-            this.CurrentFile = progressInfo.FileName;
-            this.TotalProgress = progressInfo.CurrentFileIndex * 100 / progressInfo.TotalFiles;
-        }
-
-        internal static class ApplicationLogging
-        {
-            public static ILoggerFactory LogFactory { get; } = LoggerFactory.Create(builder =>
-            {
-                builder.ClearProviders();
-                // Clear Microsoft's default providers (like event logs and others)
-                builder.AddSimpleConsole(options =>
-                {
-                    options.IncludeScopes = true;
-                    options.SingleLine = true;
-                    options.TimestampFormat = "hh:mm:ss ";
-                }).AddDebug().SetMinimumLevel(LogLevel.Information);
-            });
-
-            public static ILogger<T> CreateLogger<T>() => LogFactory.CreateLogger<T>();
-        }
+        public static ILogger<T> CreateLogger<T>() => LogFactory.CreateLogger<T>();
     }
 }

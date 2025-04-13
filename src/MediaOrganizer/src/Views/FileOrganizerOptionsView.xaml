@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MediaOrganizer.Views"
              xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
+             xmlns:uc="clr-namespace:MediaOrganizer.Controls"
              mc:Ignorable="d"
              d:DesignWidth="800">
     <UserControl.DataContext>
@@ -26,10 +27,10 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Text="Source Root:" HorizontalAlignment="Left" Margin="0, 3" />
-        <TextBox ToolTip="Specify the folder, where the random images and videos are placed." Text="{Binding Path=SourceRoot, Mode=TwoWay}" Grid.Column="1" Margin="6, 3, 0, 0" />
+        <uc:FolderSelector SelectedFolder="{Binding Path=SourceRoot, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" />
 
         <TextBlock Grid.Row="1" Text="Destination Root:" HorizontalAlignment="Left" Margin="0, 3" />
-        <TextBox ToolTip="The root folder under which all the media should be organized"  Text="{Binding Path=DestinationRoot, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Margin="6, 3, 0, 0"/>
+        <uc:FolderSelector SelectedFolder="{Binding Path=DestinationRoot, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" />
 
         <TextBlock Grid.Row="2" Text="Movies Root Folder name: " HorizontalAlignment="Left" Margin="0,3" />
         <TextBox ToolTip="The name of the folder under which all the movies should be organized" Text="{Binding Path=VideoSubfolderName, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Margin="6, 3, 0, 0"/>

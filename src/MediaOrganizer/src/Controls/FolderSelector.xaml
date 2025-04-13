@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="MediaOrganizer.Controls.FolderSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MediaOrganizer.Controls"
+             mc:Ignorable="d" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBox ToolTip="Specify the folder, where the random images and videos are placed." Text="{Binding SelectedFolder, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="6, 3, 0, 0" />
+        <Button Click="SelectFolder"  ToolTip="Browse for folder..." Grid.Column="2" Margin="6, 3, 0, 0" Padding="2, 0,2, 2" Cursor="Hand" >
+            📂
+        </Button>
+    </Grid>
+</UserControl>
