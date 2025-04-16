@@ -4,6 +4,11 @@
 
 It scans your media files and organizes them into folders based on their metadata (like date taken). Simple idea, but super handy in practice.
 
+🎉 **Media Organizer is now available on the Microsoft Store!**
+
+Simplify your media file management experience by installing directly from the [Microsoft Store](<LINK_TO_STORE>). Get automatic updates, seamless integration, and an enhanced user experience.
+
+[👉 Install from Microsoft Store](https://apps.microsoft.com/detail/9NNX2GFB7HMQ?hl=en-us&gl=US&ocid=pdpshare)
 ---
 
 ## How to build the app?
