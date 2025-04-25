@@ -6,11 +6,15 @@
              xmlns:local="clr-namespace:MediaOrganizer.Views"
              xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
              xmlns:uc="clr-namespace:MediaOrganizer.Controls"
+             xmlns:cv="clr-namespace:MediaOrganizer.Converters"
              mc:Ignorable="d"
              d:DesignWidth="800">
     <UserControl.DataContext>
         <vm:FileOrganizerOptionsViewModel />
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <cv:FileExtensionsArrayToStringConverter x:Key="cvExtensionsToStringConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -41,10 +45,40 @@
         <TextBlock Grid.Row="4" Text="Destination pattern: " HorizontalAlignment="Left" Margin="0, 3" />
         <TextBox ToolTip="The relative path pattern used to calculate target folder for each file" Text="{Binding Path=DestinationPattern, Mode=TwoWay}" Grid.Row="4" Grid.Column="1" Margin="6, 3, 0, 0" />
 
-        <TextBlock Grid.Row="5" Text="Delete on move: " HorizontalAlignment="Left" Margin="0, 3" />
-        <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding Path=RemoveSource, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
+        <Grid Grid.Row="5" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <TextBlock Text="Delete on move: " HorizontalAlignment="Left" Margin="0, 3" />
+                <CheckBox IsChecked="{Binding Path=RemoveSource, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="2">
+                <TextBlock Grid.Row="6" Text="Skip existing files: " HorizontalAlignment="Left" Margin="0, 3" />
+                <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding Path=SkipExistingFiles, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
+            </StackPanel>
+        </Grid>
+        <Expander Header="Extension options" Grid.Row="6" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="6" Text="Skip existing files: " HorizontalAlignment="Left" Margin="0, 3" />
-        <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding Path=SkipExistingFiles, Mode=TwoWay}" Margin="6, 3, 0 ,0" />
+                <TextBlock Grid.Row="0" Text="Photo extensions: " HorizontalAlignment="Left" Margin="0,3" />
+                <TextBox ToolTip="Comma-separated list of file extensions that should be considered as `photos`." Text="{Binding Path=PhotoExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" Grid.Row="0" Grid.Column="1" Margin="6, 3, 0, 0"/>
+
+                <TextBlock Grid.Row="1" Text="Movie extensions: " HorizontalAlignment="Left" Margin="0,3" />
+                <TextBox ToolTip="Comma-separated list of file extensions that should be considered as `movies`." Text="{Binding Path=VideoExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" Grid.Row="1" Grid.Column="1" Margin="6, 3, 0, 0"/>
+            </Grid>
+        </Expander>
+
     </Grid>
 </UserControl>

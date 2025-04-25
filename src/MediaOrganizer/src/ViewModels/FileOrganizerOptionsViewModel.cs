@@ -1,5 +1,6 @@
 ﻿using MediaOrganizer.Core;
 using Prism.Mvvm;
+using System.Printing;
 
 namespace MediaOrganizer.ViewModels
 {
@@ -7,6 +8,10 @@ namespace MediaOrganizer.ViewModels
     {
         private string videoSubfolderName = FilesOrganizerOptions.DefaultVideoSubfolderName;
         private string photosSubfolderName = FilesOrganizerOptions.DefaultPhotosSubfolderName;
+
+        private string[] photoExtensions = FilesOrganizerOptions.DefaultPhotoFileFormatPatterns;
+        private string[] videoExtensions = FilesOrganizerOptions.DefaultVideoFileFormatPatterns;
+
         private string sourceRoot;
         private string destinationRoot;
         private bool removeSource;
@@ -27,6 +32,10 @@ namespace MediaOrganizer.ViewModels
 
         public string DestinationPattern { get => destinationPattern; set => SetProperty(ref destinationPattern, value); }
 
+        public string[] PhotoExtensions { get => photoExtensions; set => SetProperty(ref photoExtensions, value); }
+
+        public string[] VideoExtensions { get => videoExtensions; set => SetProperty(ref videoExtensions, value); }
+
         public FileOrganizerOptionsViewModel() : base()
         {
         }
@@ -41,7 +50,9 @@ namespace MediaOrganizer.ViewModels
                 VideoSubfolderName = this.VideoSubfolderName,
                 RemoveSource = this.RemoveSource,
                 SkipExistingFiles = this.SkipExistingFiles,
-                DestinationPattern = this.DestinationPattern
+                DestinationPattern = this.DestinationPattern,
+                ImageFileFormatPatterns = this.PhotoExtensions,
+                VideoFileFormatPatterns = this.VideoExtensions
             };
         }
     }
