@@ -1,4 +1,5 @@
 ﻿using MediaOrganizer.Core;
+using MediaOrganizer.Services;
 using MediaOrganizer.Storage.Local;
 using Microsoft.Extensions.Logging;
 using Prism.Commands;
@@ -20,10 +21,17 @@ public class FileOrganizerViewModel : BindableBase
     private CancellationTokenSource cancellationToken;
     private Task organizerTask;
     private readonly Progress<ProgressInfo> progress;
+    private readonly IAppStateManager appStateManager;
+    private readonly Task _loadTask;
     private ILogger<FileOrganizerViewModel> logger;
+    private FileOrganizerOptionsViewModel options;
     private int totalProgress = 0;
 
-    public FileOrganizerOptionsViewModel Options { get; } = new FileOrganizerOptionsViewModel() { VideoSubfolderName = "Movies", PhotosSubfolderName = "Photos" };
+    public FileOrganizerOptionsViewModel Options
+    {
+        get => options;
+        set => SetProperty(ref this.options, value);
+    }
 
     public DelegateCommand OrganizeFilesCommand { get; init; }
 
@@ -58,6 +66,22 @@ public class FileOrganizerViewModel : BindableBase
         this.logger = ApplicationLogging.CreateLogger<FileOrganizerViewModel>();
         this.organizerFactory = new PhysicalFilesOrganizerFactory(this.logger);
         this.progress = new Progress<ProgressInfo>(ReportProgress);
+
+        this.appStateManager = AppStateManager.Instance;
+        _loadTask = Task.Run(async () => await InitializeAsync());
+    }
+
+    private async Task InitializeAsync()
+    {
+        var options = await ReloadOptionsFromState();
+        this.Options = new FileOrganizerOptionsViewModel(options);
+    }
+
+    private async Task<FilesOrganizerOptions> ReloadOptionsFromState()
+    {
+        await this.appStateManager.BeginLoadState();
+
+        return await FileOrganizerOptionsStateHelper.GetFileOrganizerOptionsAsync(this.appStateManager);
     }
 
     private async Task Organize()
@@ -89,7 +113,10 @@ public class FileOrganizerViewModel : BindableBase
             throw new DirectoryNotFoundException("Source not found");
         }
 
-        var organizer = this.organizerFactory.Create(this.Options.GetOptions());
+        var options = this.Options.GetOptions();
+
+        FileOrganizerOptionsStateHelper.SaveFileOrganizerOptionsState(this.appStateManager, options);
+        var organizer = this.organizerFactory.Create(options);
         await organizer.OrganizeAsync(progress, this.cancellationToken.Token);
     }
 

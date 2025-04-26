@@ -1,6 +1,5 @@
 ﻿using MediaOrganizer.Core;
 using Prism.Mvvm;
-using System.Printing;
 
 namespace MediaOrganizer.ViewModels
 {
@@ -38,6 +37,20 @@ namespace MediaOrganizer.ViewModels
 
         public FileOrganizerOptionsViewModel() : base()
         {
+
+        }
+
+        public FileOrganizerOptionsViewModel(FilesOrganizerOptions options) : base()
+        {
+            this.SourceRoot = options.SourceRoot;
+            this.DestinationRoot = options.DestinationRoot;
+            this.PhotosSubfolderName = options.PhotosSubfolderName;
+            this.VideoSubfolderName = options.VideoSubfolderName;
+            this.RemoveSource = options.RemoveSource;
+            this.SkipExistingFiles = options.SkipExistingFiles;
+            this.DestinationPattern = options.DestinationPattern;
+            this.PhotoExtensions = options.ImageFileFormatPatterns;
+            this.VideoExtensions = options.VideoFileFormatPatterns;
         }
 
         public FilesOrganizerOptions GetOptions()

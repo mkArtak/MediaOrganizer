@@ -6,7 +6,7 @@
         xmlns:uc="clr-namespace:MediaOrganizer.Views"
         xmlns:vm ="clr-namespace:MediaOrganizer.ViewModels"
         xmlns:cv="clr-namespace:MediaOrganizer.Converters"
-        Title="Media Organizer" Height="270" MaxHeight="300" Width="525" MinWidth="450" MinHeight="250">
+        Title="Media Organizer" Height="270" MaxHeight="350" Width="525" MinWidth="450" MinHeight="250">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter"/>
         <cv:BooleanToTextConverter x:Key="cvBooleanToTextConverter" />
