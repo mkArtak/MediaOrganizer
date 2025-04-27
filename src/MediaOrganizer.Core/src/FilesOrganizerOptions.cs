@@ -10,9 +10,9 @@ namespace MediaOrganizer.Core
 
         public static readonly string DefaultDestinationPattern = "{Year}/{MonthName}/{Year}-{Month}-{Day}";
 
-        public static readonly string[] DefaultVideoFileFormatPatterns = { ".mov", ".mp4", ".avi", ".3gp", ".mpg" };
+        public static readonly string[] DefaultVideoFileFormatPatterns = { ".mov", ".mp4", ".avi", ".3gp", ".mpg", ".mkv", ".wmv", ".flv", ".m4v", ".webm" };
 
-        public static readonly string[] DefaultPhotoFileFormatPatterns = { ".jpg", ".jpeg", ".png" };
+        public static readonly string[] DefaultPhotoFileFormatPatterns = { ".jpg", ".jpeg", ".png", ".heic", ".bmp", ".gif", ".tiff", ".tif", ".webp" };
 
         public string[] VideoFileFormatPatterns { get; set; } = DefaultVideoFileFormatPatterns;
 
