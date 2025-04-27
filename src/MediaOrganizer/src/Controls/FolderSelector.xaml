@@ -12,7 +12,7 @@
         </Grid.ColumnDefinitions>
 
         <TextBox ToolTip="Specify the folder, where the random images and videos are placed." Text="{Binding SelectedFolder, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="6, 3, 0, 0" />
-        <Button Click="SelectFolder"  ToolTip="Browse for folder..." Grid.Column="2" Margin="6, 3, 0, 0" Padding="2, 0,2, 2" Cursor="Hand" >
+        <Button Click="SelectFolder"  ToolTip="Browse for folder..." Grid.Column="2" Margin="6, 3, 0, 0" Padding="2, 0,2, 2" Cursor="Hand" Width="30" >
             📂
         </Button>
     </Grid>
