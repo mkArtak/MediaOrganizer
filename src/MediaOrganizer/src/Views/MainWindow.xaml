@@ -102,12 +102,5 @@
             </Button.Style>
         </Button>
 
-        <!-- Status Bar -->
-        <StatusBar Grid.Row="3" Margin="0,5,0,0">
-            <StatusBarItem>
-                <TextBlock Text="{Binding StatusMessage, FallbackValue='Ready'}" />
-            </StatusBarItem>
-        </StatusBar>
-
     </Grid>
 </Window>
