@@ -15,6 +15,7 @@ public class FileOrganizerViewModel : BindableBase
 {
     public bool isRunning;
     private string currentFile;
+    private string statusMessage;
 
     private readonly PhysicalFilesOrganizerFactory organizerFactory;
 
@@ -53,14 +54,26 @@ public class FileOrganizerViewModel : BindableBase
         set => SetProperty(ref this.totalProgress, value);
     }
 
+    public string StatusMessage
+    {
+        get => this.statusMessage;
+        set => SetProperty(ref this.statusMessage, value);
+    }
+
     public FileOrganizerViewModel() : base()
     {
         this.OrganizeFilesCommand = new DelegateCommand(async () =>
         {
             if (this.IsRunning)
+            {
+                this.StatusMessage = "Stopping...";
                 this.cancellationToken.Cancel();
+            }
             else
+            {
+                this.StatusMessage = "Starting...";
                 this.organizerTask = Organize();
+            }
         });
 
         this.logger = ApplicationLogging.CreateLogger<FileOrganizerViewModel>();
@@ -73,8 +86,10 @@ public class FileOrganizerViewModel : BindableBase
 
     private async Task InitializeAsync()
     {
+        this.StatusMessage = "Loading options...";
         var options = await ReloadOptionsFromState();
         this.Options = new FileOrganizerOptionsViewModel(options);
+        this.StatusMessage = "Ready";
     }
 
     private async Task<FilesOrganizerOptions> ReloadOptionsFromState()
@@ -87,6 +102,7 @@ public class FileOrganizerViewModel : BindableBase
     private async Task Organize()
     {
         this.IsRunning = true;
+        this.StatusMessage = "Organizing files...";
 
         try
         {
@@ -95,6 +111,12 @@ public class FileOrganizerViewModel : BindableBase
             this.cancellationToken = new CancellationTokenSource();
 
             await OrganizeFilesByDatesAndTypes();
+            this.StatusMessage = "Organization completed.";
+        }
+        catch (Exception ex)
+        {
+            this.StatusMessage = $"Error: {ex.Message}";
+            this.logger.LogError(ex, "An error occurred during file organization.");
         }
         finally
         {
@@ -125,6 +147,7 @@ public class FileOrganizerViewModel : BindableBase
         this.logger.LogInformation(progressInfo.FileName);
         this.CurrentFile = progressInfo.FileName;
         this.TotalProgress = progressInfo.CurrentFileIndex * 100 / progressInfo.TotalFiles;
+        this.StatusMessage = $"Processing: {progressInfo.FileName}";
     }
 
     internal static class ApplicationLogging
