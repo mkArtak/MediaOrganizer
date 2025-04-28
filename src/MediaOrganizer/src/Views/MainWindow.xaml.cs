@@ -1,25 +1,26 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Windows;
 
-namespace MediaOrganizer.Views
+namespace MediaOrganizer.Views;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        //private void OnStateChanged()
-        //{
-        //    this.txtDestination.IsEnabled = !this.IsRunning;
-        //    this.txtSource.IsEnabled = !this.IsRunning;
-        //    this.btnStart.Content = this.IsRunning ? "Stop" : "Start";
-        //    this.prgProgress.Visibility = this.IsRunning ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-        //}
+        InitializeComponent();
 
-        public MainWindow()
+    }
+
+    private void ReportProblem_Click(object sender, RoutedEventArgs e)
+    {
+        var reportProblemUrl = "https://github.com/mkArtak/MediaOrganizer/issues/new?template=bug_report.md";
+        using var browserProcess = Process.Start(new ProcessStartInfo
         {
-            InitializeComponent();
-
-        }
+            FileName = reportProblemUrl,
+            UseShellExecute = true,
+        });
     }
 }

@@ -14,28 +14,53 @@
 
         <!-- Modern Button Style -->
         <Style TargetType="Button">
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="Background" Value="#FF007ACC" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Padding" Value="10,5" />
-            <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="BorderThickness" Value="0" />
+            <!-- Your existing setters -->
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#FF007ACC"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}" CornerRadius="6" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FF3399FF" />
+                    <Setter Property="Background" Value="#FF3399FF"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <!-- Add this -->
                 </Trigger>
                 <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                    <Setter Property="Background" Value="#FFE57373" />
+                    <Setter Property="Background" Value="#FFE57373"/>
                 </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SecondaryActionButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#555555"/>
+                    <!-- soft dark gray -->
+                </Trigger>
             </Style.Triggers>
         </Style>
 
@@ -95,6 +120,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -178,6 +204,15 @@
                 </Style>
             </Button.Style>
         </Button>
+
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Grid.Row="3">
+            <Button Click="ReportProblem_Click" Style="{StaticResource SecondaryActionButton}" Margin="0,20,0,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="💬" Margin="0,0,5,0" FontSize="14"/>
+                    <TextBlock Text="Report a Problem" FontSize="12"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
 
     </Grid>
 </Window>
