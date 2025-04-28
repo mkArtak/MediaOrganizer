@@ -22,6 +22,7 @@ public class PhysicalFileOrganizerTests
             RemoveSource = false,
             SkipExistingFiles = true
         };
+        var cleanupMock = new Mock<ICleanup>();
 
         var fileEnumeratorMock = new Mock<IFileEnumerator>();
         fileEnumeratorMock.Setup(e => e.GetFiles(options.SourceRoot)).Returns(files);
@@ -34,7 +35,7 @@ public class PhysicalFileOrganizerTests
                       return true;
                   });
 
-        var organizer = new PhysicalFileOrganizer(options, fileMoverMock.Object, fileEnumeratorMock.Object, mapperMock.Object, createDirectoryIfNoExistHandlerMock.Object, loggerMock.Object);
+        var organizer = new PhysicalFileOrganizer(options, fileMoverMock.Object, fileEnumeratorMock.Object, mapperMock.Object, cleanupMock.Object, createDirectoryIfNoExistHandlerMock.Object, loggerMock.Object);
         var progressMock = new Mock<IProgress<ProgressInfo>>();
         var cancellationToken = CancellationToken.None;
 

@@ -18,7 +18,8 @@ public class PhysicalFilesOrganizerFactory
         var mapper = new MediaFileMapper(options);
         var fileMover = new PhysicalFileMover(this.logger);
         var enumerator = new PhysicalFileEnumerator();
+        var cleanupHandler = new DefaultCleanup(options.SourceRoot, this.logger);
 
-        return new PhysicalFileOrganizer(options, fileMover, enumerator, mapper, this.logger);
+        return new PhysicalFileOrganizer(options, fileMover, enumerator, mapper, cleanupHandler, this.logger);
     }
 }
