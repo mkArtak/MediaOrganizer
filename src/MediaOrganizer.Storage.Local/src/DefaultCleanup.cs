@@ -26,6 +26,8 @@ internal class DefaultCleanup : ICleanup
         folders.Add(Path.GetDirectoryName(file));
     }
 
+    ///TODO: The current implementation is not optimal.
+    /// Specifically, when going to remove empty folders, and if we're going to remove a parent folder anyway, there is no point in removing child folders first. Instead, removing parent only will bring the same value.
     public async Task RemoveEmptyFolders(IProgress<ProgressInfo> progress)
     {
         progress.Report(new ProgressInfo("Cleaning up empty folders", folders.Count, 0));
@@ -65,23 +67,24 @@ internal class DefaultCleanup : ICleanup
         for (var i = 0; i < emptyFolders.Count; i++)
         {
             var emptyFolder = emptyFolders[i];
-            progress.Report(new ProgressInfo($"Deleting empty folder {emptyFolder}", emptyFolders.Count, i));
-
             await Task.Run(() =>
             {
-                try
-                {
-                    if (Directory.Exists(emptyFolder))
-                    {
-                        Directory.Delete(emptyFolder);
-                        this.logger.LogInformation($"Deleted empty folder: {emptyFolder}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    this.logger.LogWarning($"Failed to delete empty folder {emptyFolder}. Reason: {ex.Message}");
-                }
+                progress.Report(new ProgressInfo($"Deleting empty folder {emptyFolder}", emptyFolders.Count, i));
             });
+
+            try
+            {
+                if (Directory.Exists(emptyFolder))
+                {
+                    Directory.Delete(emptyFolder);
+                    this.logger.LogInformation($"Deleted empty folder: {emptyFolder}");
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogWarning($"Failed to delete empty folder {emptyFolder}. Reason: {ex.Message}");
+            }
+
         }
 
         folders.Clear();
