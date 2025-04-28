@@ -6,6 +6,7 @@
         xmlns:uc="clr-namespace:MediaOrganizer.Controls"
         xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
         xmlns:cv="clr-namespace:MediaOrganizer.Converters"
+        xmlns:vw="clr-namespace:MediaOrganizer.Views"
         Title="Media Organizer" Height="450" MaxHeight="700" Width="600" MinWidth="450" MinHeight="300">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter" />
@@ -135,35 +136,7 @@
 
                 <!-- Advanced Options Expander -->
                 <Expander Header="🛠️ Advanced Options (optional)" Margin="0,10,0,10" IsExpanded="False">
-                    <StackPanel Margin="10">
-
-                        <TextBlock Text="Folder Naming" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,5" />
-                        <TextBlock Text="Movies Root Folder Name:" FontWeight="SemiBold" Margin="0,6,0,2" />
-                        <TextBox Text="{Binding Options.VideoSubfolderName, Mode=TwoWay}" ToolTip="The name of the folder under which all the movies will be organized." Margin="0,0,0,5" />
-                        <TextBlock Text="Photos Root Folder Name:" FontWeight="SemiBold" Margin="0,6,0,2" />
-                        <TextBox Text="{Binding Options.PhotosSubfolderName, Mode=TwoWay}" ToolTip="The name of the folder under which all the photos will be organized." Margin="0,0,0,5" />
-                        <TextBlock Text="Destination Folder Structure:" FontWeight="SemiBold" Margin="0,6,0,2" />
-                        <TextBox Text="{Binding Options.DestinationPattern, Mode=TwoWay}" ToolTip="Define how organized folders will be created using placeholders like {Year}\\{Month}\\{Day}." Margin="0,0,0,10" />
-
-                        <TextBlock Text="File Type Settings" FontSize="13" FontWeight="SemiBold" Margin="0,15,0,5" />
-                        <TextBlock Text="Photo Extensions:" FontWeight="SemiBold" Margin="0,6,0,2" />
-                        <TextBox Text="{Binding Options.PhotoExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" ToolTip="Comma-separated list of file extensions considered as photos." Margin="0,0,0,5" />
-                        <TextBlock Text="Movie Extensions:" FontWeight="SemiBold" Margin="0,6,0,2" />
-                        <TextBox Text="{Binding Options.VideoExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" ToolTip="Comma-separated list of file extensions considered as movies." Margin="0,0,0,10" />
-
-                        <GroupBox Header="File Handling Options" Margin="0,10,0,0">
-                            <GroupBox.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background" Value="#FFF9F9F9" />
-                                </Style>
-                            </GroupBox.Resources>
-                            <StackPanel Orientation="Vertical" Margin="10,5,10,5">
-                                <CheckBox Content="Delete source files after organizing" IsChecked="{Binding Options.RemoveSource, Mode=TwoWay}" Margin="0,5,0,5" />
-                                <CheckBox Content="Skip files that already exist at destination" IsChecked="{Binding Options.SkipExistingFiles, Mode=TwoWay}" Margin="0,5,0,5" />
-                            </StackPanel>
-                        </GroupBox>
-
-                    </StackPanel>
+                    <vw:FileOrganizerOptionsView DataContext="{Binding Path=Options, Mode=TwoWay}" />
                 </Expander>
 
             </StackPanel>

@@ -15,7 +15,6 @@ public class FileOrganizerViewModel : BindableBase
 {
     public bool isRunning;
     private string currentFile;
-    private string statusMessage;
 
     private readonly PhysicalFilesOrganizerFactory organizerFactory;
 
@@ -133,7 +132,8 @@ public class FileOrganizerViewModel : BindableBase
     {
         this.logger.LogInformation(progressInfo.FileName);
         this.CurrentFile = progressInfo.FileName;
-        this.TotalProgress = progressInfo.CurrentFileIndex * 100 / progressInfo.TotalFiles;
+        if (progressInfo.TotalFiles != 0)
+            this.TotalProgress = progressInfo.CurrentFileIndex * 100 / progressInfo.TotalFiles;
     }
 
     internal static class ApplicationLogging

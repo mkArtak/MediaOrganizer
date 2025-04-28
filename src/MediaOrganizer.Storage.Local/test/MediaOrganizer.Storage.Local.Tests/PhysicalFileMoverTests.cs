@@ -20,7 +20,8 @@ public class PhysicalFileMoverTests
         var options = new FileMoverOptions
         {
             RemoveSourceAfterMove = true,
-            SkipIfFileExists = false
+            SkipIfFileExists = false,
+            DeleteEmptyFolders = false
         };
 
         var sourceFile = "source.txt";

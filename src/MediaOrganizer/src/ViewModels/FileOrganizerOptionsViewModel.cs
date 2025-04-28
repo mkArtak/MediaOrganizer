@@ -16,8 +16,11 @@ namespace MediaOrganizer.ViewModels
         private bool removeSource;
         private bool skipExistingFiles;
         private string destinationPattern = "{Year}/{MonthName}/{Year}-{Month}-{Day}";
+        private bool deleteEmptyFolders;
 
         public bool SkipExistingFiles { get => skipExistingFiles; set => SetProperty(ref skipExistingFiles, value); }
+
+        public bool DeleteEmptyFolders { get => deleteEmptyFolders; set => SetProperty(ref deleteEmptyFolders, value); }
 
         public bool RemoveSource { get => removeSource; set => SetProperty(ref this.removeSource, value); }
 
@@ -51,6 +54,7 @@ namespace MediaOrganizer.ViewModels
             this.DestinationPattern = options.DestinationPattern;
             this.PhotoExtensions = options.ImageFileFormatPatterns;
             this.VideoExtensions = options.VideoFileFormatPatterns;
+            this.DeleteEmptyFolders = options.DeleteEmptyFolders;
         }
 
         public FilesOrganizerOptions GetOptions()
@@ -65,7 +69,8 @@ namespace MediaOrganizer.ViewModels
                 SkipExistingFiles = this.SkipExistingFiles,
                 DestinationPattern = this.DestinationPattern,
                 ImageFileFormatPatterns = this.PhotoExtensions,
-                VideoFileFormatPatterns = this.VideoExtensions
+                VideoFileFormatPatterns = this.VideoExtensions,
+                DeleteEmptyFolders = this.DeleteEmptyFolders
             };
         }
     }

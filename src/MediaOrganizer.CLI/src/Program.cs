@@ -74,7 +74,8 @@ async Task OrganizeAsync(string source, string destination, bool removeSource, b
     var fileMoverOptions = new FileMoverOptions
     {
         RemoveSourceAfterMove = options.RemoveSource,
-        SkipIfFileExists = options.SkipExistingFiles
+        SkipIfFileExists = options.SkipExistingFiles,
+        DeleteEmptyFolders = options.DeleteEmptyFolders
     };
 
     using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
