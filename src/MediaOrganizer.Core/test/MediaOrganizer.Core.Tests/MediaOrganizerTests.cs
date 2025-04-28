@@ -1,10 +1,9 @@
-﻿using MediaOrganizer.Core;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace MediaOrganizer.Storage.Local.Tests;
+namespace MediaOrganizer.Core.Tests;
 
-public class PhysicalFileOrganizerTests
+public class MediaOrganizerTests
 {
     [Fact]
     public async Task OrganizeAsync_MovesFilesSuccessfully()
@@ -35,7 +34,7 @@ public class PhysicalFileOrganizerTests
                       return true;
                   });
 
-        var organizer = new PhysicalFileOrganizer(options, fileMoverMock.Object, fileEnumeratorMock.Object, mapperMock.Object, cleanupMock.Object, createDirectoryIfNoExistHandlerMock.Object, loggerMock.Object);
+        var organizer = new MediaOrganizer(options, fileMoverMock.Object, fileEnumeratorMock.Object, mapperMock.Object, cleanupMock.Object, createDirectoryIfNoExistHandlerMock.Object, loggerMock.Object);
         var progressMock = new Mock<IProgress<ProgressInfo>>();
         var cancellationToken = CancellationToken.None;
 

@@ -1,4 +1,5 @@
 ﻿using MediaOrganizer.Core;
+using MediaOrganizer.Storage.Local.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -20,6 +21,6 @@ public class PhysicalFilesOrganizerFactory
         var enumerator = new PhysicalFileEnumerator();
         var cleanupHandler = new DefaultCleanup(options.SourceRoot, this.logger);
 
-        return new PhysicalFileOrganizer(options, fileMover, enumerator, mapper, cleanupHandler, this.logger);
+        return new Core.MediaOrganizer(options, fileMover, enumerator, mapper, cleanupHandler, FileSystemExtensions.CreateDirectoryIfNotExists, this.logger);
     }
 }

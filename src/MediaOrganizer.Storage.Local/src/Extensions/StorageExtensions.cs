@@ -11,7 +11,7 @@ public static class StorageExtensions
         services.AddSingleton<IMapper, MediaFileMapper>();
         services.AddSingleton<IFileEnumerator, PhysicalFileEnumerator>();
         services.AddTransient<IFileMover>(sp => new PhysicalFileMover(sp.GetRequiredService<ILogger<PhysicalFileMover>>()));
-        services.AddTransient<IFilesOrganizer, PhysicalFileOrganizer>();
+        services.AddTransient<IFilesOrganizer, MediaOrganizer.Core.MediaOrganizer>();
 
         return services;
     }

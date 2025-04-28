@@ -1,14 +1,12 @@
-﻿using MediaOrganizer.Core;
-using MediaOrganizer.Storage.Local.Extensions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MediaOrganizer.Storage.Local;
+namespace MediaOrganizer.Core;
 
-internal sealed class PhysicalFileOrganizer : IFilesOrganizer
+public class MediaOrganizer : IFilesOrganizer
 {
     private readonly Action<string> createDirectoryIfNotExistHandler;
 
@@ -26,11 +24,7 @@ internal sealed class PhysicalFileOrganizer : IFilesOrganizer
 
     private ICleanup CleanupHandler { get; set; }
 
-    public PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, ICleanup cleanupHandler, ILogger logger) : this(options, mover, enumerator, mapper, cleanupHandler, FileSystemExtensions.CreateDirectoryIfNotExists, logger)
-    {
-    }
-
-    internal PhysicalFileOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, ICleanup cleanupHandler, Action<string> createDirectoryIfNotExistHandler, ILogger logger)
+    public MediaOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, ICleanup cleanupHandler, Action<string> createDirectoryIfNotExistHandler, ILogger logger)
     {
         this.Options = options ?? throw new ArgumentNullException(nameof(options));
         this.MoverOptions = new FileMoverOptions
