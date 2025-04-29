@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using MediaOrganizer.ViewModels;
+using System;
+using System.Diagnostics;
 using System.Windows;
 
 namespace MediaOrganizer.Views;
@@ -8,10 +10,11 @@ namespace MediaOrganizer.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    public MainWindow(FileOrganizerViewModel viewModel)
     {
-        InitializeComponent();
+        this.DataContext = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 
+        InitializeComponent();
     }
 
     private void ReportProblem_Click(object sender, RoutedEventArgs e)

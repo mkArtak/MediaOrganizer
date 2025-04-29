@@ -3,6 +3,7 @@
 
 using MediaOrganizer.Core;
 using MediaOrganizer.Storage.Local;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.CommandLine;
 
@@ -78,9 +79,13 @@ async Task OrganizeAsync(string source, string destination, bool removeSource, b
         DeleteEmptyFolders = options.DeleteEmptyFolders
     };
 
-    using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-    var logger = loggerFactory.CreateLogger<PhysicalFilesOrganizerFactory>();
-    var factory = new PhysicalFilesOrganizerFactory(logger);
+
+    var sc = new ServiceCollection();
+    sc.AddLogging();
+    sc.AddLocalStorageServices();
+    var sp = sc.BuildServiceProvider();
+
+    var factory = sp.GetRequiredService<IOrganizerFactory>();
     var organizer = factory.Create(options);
     await organizer.OrganizeAsync(new Progress<ProgressInfo>(), CancellationToken.None);
 }
