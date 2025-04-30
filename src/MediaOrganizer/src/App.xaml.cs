@@ -23,10 +23,19 @@ public partial class App : Application
         _serviceProvider = sc.BuildServiceProvider();
 
         // This will cause the `ApplicationStartup event to file, and the Application_Startup handler to be called subsequently.
-        base.OnStartup(e);
+        _serviceProvider.GetRequiredService<IAppStateManager>().BeginLoadState();
 
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
         mainWindow.Show();
+
+        base.OnStartup(e);
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _serviceProvider.GetRequiredService<IAppStateManager>().SaveStateAsync().GetAwaiter().GetResult();
+
+        base.OnExit(e);
     }
 
     private void ConfigureServices(ServiceCollection services)
@@ -38,15 +47,5 @@ public partial class App : Application
         services.AddSingleton<IAppStateManager, AppStateManager>();
         services.AddSingleton<FileOrganizerViewModel>();
         services.AddSingleton<MainWindow>();
-    }
-
-    private void Application_Startup(object sender, StartupEventArgs e)
-    {
-        _serviceProvider.GetRequiredService<IAppStateManager>().BeginLoadState();
-    }
-
-    private void Application_Exit(object sender, ExitEventArgs e)
-    {
-        _serviceProvider.GetRequiredService<IAppStateManager>().SaveStateAsync().GetAwaiter().GetResult();
     }
 }

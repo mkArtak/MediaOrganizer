@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -9,41 +10,52 @@ namespace MediaOrganizer.Services;
 internal class AppStateManager : IAppStateManager
 {
     private readonly ConcurrentDictionary<string, string> _state = new();
-
+    private readonly ILogger _logger;
     private string _filename = "App.data";
     private Task _loadTask;
 
-    public AppStateManager()
+    public AppStateManager(ILogger<AppStateManager> logger)
     {
-
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public Task BeginLoadState()
     {
-        _loadTask = LoadStateAsync();
-        return _loadTask;
+        return _loadTask ??= LoadStateAsync();
     }
 
     public async Task SaveStateAsync()
     {
-        IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForDomain();
+        // Wait for the previous load operation to complete first.
+        if (_loadTask is not null)
+            await _loadTask;
 
-        using IsolatedStorageFileStream stream = storage.OpenFile(_filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-        using StreamWriter writer = new StreamWriter(stream);
-
-        foreach (var state in _state)
+        _logger.LogInformation($"Saving application state to file: {_filename}");
+        try
         {
-            var lineToStore = state.Key + IAppStateManager.ExtensionsSeparator + state.Value;
-            await writer.WriteLineAsync(lineToStore);
+            using IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForDomain();
+            using IsolatedStorageFileStream stream = storage.OpenFile(_filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            using StreamWriter writer = new StreamWriter(stream);
+
+            foreach (var state in _state)
+            {
+                var lineToStore = state.Key + IAppStateManager.ExtensionsSeparator + state.Value;
+                await writer.WriteLineAsync(lineToStore);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error saving application state. Reason: {ex.Message}");
         }
     }
 
     private async Task LoadStateAsync()
     {
-        _state.Clear();
-        IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForDomain();
+        _logger.LogTrace($"Loading application state");
         try
         {
+            using IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForDomain();
+
             if (storage.FileExists(_filename))
             {
                 using IsolatedStorageFileStream stream = storage.OpenFile(_filename, FileMode.Open, FileAccess.Read);
@@ -56,28 +68,27 @@ internal class AppStateManager : IAppStateManager
                     if (keyValue.Length != 2)
                     {
                         // Skip loading this particular setting as the data is corrupt
+                        _logger.LogWarning($"Invalid line in state file: {line}. Expected format: key{IAppStateManager.ExtensionsSeparator}value");
                         continue;
                     }
 
                     _state.TryAdd(keyValue[0], keyValue[1]);
                 }
             }
+            else
+            {
+                _logger.LogWarning($"State file not found: {_filename}. No state loaded.");
+            }
         }
-        catch (DirectoryNotFoundException ex)
+        catch (Exception ex)
         {
-            // Path the file didn't exist
-        }
-        catch (IsolatedStorageException ex)
-        {
-            // Storage was removed or doesn't exist
-            // -or-
-            // If using .NET 6+ the inner exception contains the real cause
+            _logger.LogError(ex, $"Error loading application state. Reason: {ex.Message}");
         }
     }
 
     public async Task<T> GetState<T>(string key)
     {
-        await (_loadTask ?? LoadStateAsync());
+        await _loadTask;
 
         if (_state.TryGetValue(key, out string value))
         {
