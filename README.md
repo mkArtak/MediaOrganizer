@@ -9,25 +9,77 @@ It scans your media files and organizes them into folders based on their metadat
 Simplify your media file management experience by installing directly from the [Microsoft Store](<LINK_TO_STORE>). Get automatic updates, seamless integration, and an enhanced user experience.
 
 [👉 Install from Microsoft Store](https://apps.microsoft.com/detail/9NNX2GFB7HMQ?hl=en-us&gl=US&ocid=pdpshare)
+
 ---
-
-## How to build the app?
-1. Clone the repository to your local machine [How To](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository#cloning-a-repository)
-2. Install .NET 9 if you don't have it yet [Download .NET 9](https://get.dot.net).
-3. Open the terminal / console window
-4. Decide how you'd like to run the app (Command line utility or the Desktop app - see the next chapters).
-5.**If you'd like to use the command-line utility**, navigate to the MediaOrganizer.CLI folder in the terminal
-6.**If you'd like to use the desktop app**, navigateto the MediaOrganizer folder in the terminal
-7. Run `dotnet build` command
-
-This will build the project and produce the app under the `bin/debug` folder of the project that you built.
 
 ## How to use it?
 
-The app comes in two forms (for now): a command-line utility and a desktop application to run on a Windows PC.
+The app comes in two forms: a command-line utility and a desktop application to run on a Windows PC.
+
+---
+## 🖼️ Desktop App in Action
+
+Here’s what the app looks like:
+
+![Media Organizer screenshot](https://github.com/user-attachments/assets/57c73879-0dc1-4ea3-b6c7-bcc312310366)
+
+You can customize many options to control how exactly to organize your media.
+
+![Options](https://github.com/user-attachments/assets/4659af2d-7856-45a3-b3ab-7f8d0c57814e)
+
+### ⚙️ Options Explained
+
+#### 🔤 Folder Naming
+
+| Option                     | Description                                                                                       |
+|---------------------------|---------------------------------------------------------------------------------------------------|
+| **Movies Root Folder Name** | Base folder name under which all organized video files will be placed (e.g., `Movies`).            |
+| **Photos Root Folder Name** | Base folder name under which all organized photo files will be placed (e.g., `Photos`).            |
+| **Destination Folder Structure** | Folder hierarchy pattern using placeholders:<br/>- `{Year}` → e.g., `2023`<br/>- `{Month}` → `03`<br/>- `{MonthName}` → `March`<br/>- `{Day}` → `15`<br/><br/>Example: `{Year}/{MonthName}` results in folders like `2023/March`. |
+
+---
+
+#### 🖼 File Type Settings
+
+| Option             | Description                                                                                     |
+|--------------------|-------------------------------------------------------------------------------------------------|
+| **Photo Extensions** | List of file extensions treated as photo files. Default includes:<br/>`.jpg`, `.jpeg`, `.png`, `.heic`, `.bmp`, `.gif`, `.tiff`, `.tif`, `.webp` |
+| **Movie Extensions** | List of file extensions treated as video files. Default includes:<br/>`.mov`, `.mp4`, `.avi`, `.3gp`, `.mpg`, `.mkv`, `.wmv`, `.flv`, `.m4v`, `.webm` |
+
+---
+
+#### 🗃 File Handling Options
+
+| Option                                  | Description                                                                 |
+|----------------------------------------|-----------------------------------------------------------------------------|
+| ✅ **Delete source files after organizing** | Deletes original files from the source after successful organization.       |
+| ⬜ **Skip files that already exist at destination** | Skips files that already exist in the destination folder to prevent duplication. |
+| ⬜ **Delete empty folders after organizing** | Cleans up empty directories left behind in the source location.             |
+
+---
+
+# For advanced users
+
+## How to build the app (from source code)?
+1. Install .NET 9 if you don't have it yet [Download .NET 9](https://get.dot.net).
+2. Clone the repository
+   ```bash
+   git clone https://github.com/mkArtak/mediaorganizer.git
+   cd mediaorganizer
+   ```
+3. Open the terminal / console window
+4. Decide how you'd like to run the app (Command line utility or the Desktop app - see the next chapters).
+  - **If you'd like to use the command-line utility**, navigate to the MediaOrganizer.CLI folder in the terminal
+  - **If you'd like to use the desktop app**, navigateto the MediaOrganizer folder in the terminal
+5. Run `dotnet build` command
+
+This will build the project and produce the app under the `bin/debug` folder of the project that you built.
+Navigate to that folder and start the app.
+
+---
 
 ## Command line utility
-The MediaOrganizer.CLI project will build the command-line utillity that you can use for organizing your media library.
+The MediaOrganizer.CLI project can be used to build the command-line utillity that you can use for organizing your media library.
 Here is the quick guide for the options you can use:
 
 ```console
@@ -56,75 +108,6 @@ Options:
   --version                                                  Show version information
   -?, -h, --help                                             Show help and usage information
 ```
-
-## 🖼️ Desktop App in Action
-
-Here’s what the app looks like:
-
-![Media Organizer screenshot](https://github.com/user-attachments/assets/1429c4cb-9b36-4631-87a3-e96e3c70cd70)
-
-- **Source Root**: Folder where your messy media lives  
-- **Destination Root**: Folder where the organized media will live
-- **Movies root folder name**: The name of the root folder under which the photos will be organized
-- **Photos root folder name**: The name of the root folder under which the photos will be organized
-- **Destination Pattern**: Customize your folder structure (e.g. by year, month, day)  
-- **Delete on Move**: If checked, files will be *moved* (not copied)  
-- **Skip Existing Files**: Prevent overwriting if files already exist  
-
----
-
-## ✨ Features
-
-- Organizes files using metadata (date taken, created date)
-- Customizable folder structure using tokens like `{Year}`, `{Month}`, `{Day}`, `{MonthName}`
-- Supports both **copy** and **move** modes
-- Option to skip already existing files
-- Lightweight and easy to use
-
----
-
-## 🚀 Getting Started
-
-1. Download and build the project:
-   ```bash
-   git clone https://github.com/mkArtak/mediaorganizer.git
-   cd mediaorganizer
-   dotnet build
-   ```
-
-2. Run the app:
-   ```bash
-   dotnet run --project MediaOrganizer
-   ```
-
-3. Fill in the fields in the GUI, click **Start**, and let it do its thing!
-
----
-
-## 🛠 Destination Pattern Tokens
-
-The media will be organized under two root folders (Movies and Photos), following a pattern defined by the user.
-The default pattern has the following form: `{Year}/{MonthName}/{Year}-{Month}-{Day}`
-You can use the following tokens to define your folder structure:
-
-| Token         | Description                                       |
-|---------------|---------------------------------------------------|
-| `{Year}`      | Year media was taken (..., 2010, 2025, ...)       |
-| `{Month}`     | Month (01, 02, ... 12)                            |
-| `{MonthName}` | Full month name (January, February, ... December) |
-| `{Day}`       | Day of the month (01, 02, ... 31)                 |
-
-**Example**  
-`{Year}/{MonthName}/{Year}-{Month}-{Day}`  
-would create folders like:  
-`2023/June/2023-06-15/IMG_1234.JPG`
-
----
-
-## 📜 License
-
-MIT — do whatever makes you happy with it.
-
 ---
 
 ## 🤝 Contributions
