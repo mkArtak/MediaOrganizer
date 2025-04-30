@@ -4,7 +4,9 @@ namespace MediaOrganizer.Services;
 
 public interface IAppStateManager
 {
-    static char ExtensionsSeparator = ':';
+    static char KeyValueSeparator = ':';
+
+    static char ExtensionsSeparator = ';';
 
     Task BeginLoadState();
 

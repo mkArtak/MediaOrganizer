@@ -34,14 +34,22 @@ internal class AppStateManager : IAppStateManager
         try
         {
             using IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForDomain();
+            if (storage.FileExists(_filename))
+            {
+                // Clean the previous state
+                storage.DeleteFile(_filename);
+            }
+
             using IsolatedStorageFileStream stream = storage.OpenFile(_filename, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             using StreamWriter writer = new StreamWriter(stream);
 
             foreach (var state in _state)
             {
-                var lineToStore = state.Key + IAppStateManager.ExtensionsSeparator + state.Value;
+                var lineToStore = state.Key + IAppStateManager.KeyValueSeparator + state.Value;
                 await writer.WriteLineAsync(lineToStore);
             }
+
+            _logger.LogInformation($"Successfully saved application state to file {stream.Name}");
         }
         catch (Exception ex)
         {
@@ -64,16 +72,18 @@ internal class AppStateManager : IAppStateManager
                 while (!reader.EndOfStream)
                 {
                     var line = await reader.ReadLineAsync();
-                    string[] keyValue = line.Split(IAppStateManager.ExtensionsSeparator);
+                    string[] keyValue = line.Split(IAppStateManager.KeyValueSeparator);
                     if (keyValue.Length != 2)
                     {
                         // Skip loading this particular setting as the data is corrupt
-                        _logger.LogWarning($"Invalid line in state file: {line}. Expected format: key{IAppStateManager.ExtensionsSeparator}value");
+                        _logger.LogWarning($"Invalid line in state file: {line}. Expected format: key{IAppStateManager.KeyValueSeparator}value");
                         continue;
                     }
 
                     _state.TryAdd(keyValue[0], keyValue[1]);
                 }
+
+                _logger.LogInformation($"Successfully loaded application state from file {stream.Name}");
             }
             else
             {
