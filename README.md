@@ -61,7 +61,12 @@ Options:
 
 Here’s what the app looks like:
 
-![Media Organizer screenshot](https://github.com/user-attachments/assets/1429c4cb-9b36-4631-87a3-e96e3c70cd70)
+![Media Organizer screenshot](https://github.com/user-attachments/assets/57c73879-0dc1-4ea3-b6c7-bcc312310366)
+
+You can customize many options to control how exactly to organize your media.
+
+![Options](https://github.com/user-attachments/assets/4659af2d-7856-45a3-b3ab-7f8d0c57814e)
+
 
 - **Source Root**: Folder where your messy media lives  
 - **Destination Root**: Folder where the organized media will live
