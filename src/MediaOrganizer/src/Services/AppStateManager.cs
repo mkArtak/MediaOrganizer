@@ -8,15 +8,12 @@ namespace MediaOrganizer.Services;
 
 internal class AppStateManager : IAppStateManager
 {
-    private static readonly AppStateManager _instance = new AppStateManager();
-    public static AppStateManager Instance => _instance;
-
     private readonly ConcurrentDictionary<string, string> _state = new();
 
     private string _filename = "App.data";
     private Task _loadTask;
 
-    private AppStateManager()
+    public AppStateManager()
     {
 
     }
@@ -41,7 +38,7 @@ internal class AppStateManager : IAppStateManager
         }
     }
 
-    public async Task LoadStateAsync()
+    private async Task LoadStateAsync()
     {
         _state.Clear();
         IsolatedStorageFile storage = IsolatedStorageFile.GetUserStoreForDomain();
@@ -80,7 +77,7 @@ internal class AppStateManager : IAppStateManager
 
     public async Task<T> GetState<T>(string key)
     {
-        await (_loadTask ?? BeginLoadState());
+        await (_loadTask ?? LoadStateAsync());
 
         if (_state.TryGetValue(key, out string value))
         {

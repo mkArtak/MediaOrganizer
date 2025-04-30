@@ -5,22 +5,24 @@ using System;
 
 namespace MediaOrganizer.Storage.Local;
 
-public class PhysicalFilesOrganizerFactory
+public class PhysicalFilesOrganizerFactory : IOrganizerFactory
 {
-    private ILogger logger;
+    private readonly IFileMover _mover;
+    private readonly ILogger _logger;
+    private readonly IFileEnumerator _fileEnumerator;
 
-    public PhysicalFilesOrganizerFactory(ILogger logger)
+    public PhysicalFilesOrganizerFactory(IFileMover mover, IFileEnumerator fileEnumerator, ILogger<PhysicalFilesOrganizerFactory> logger)
     {
-        this.logger = logger ?? throw new ArgumentException(nameof(logger));
+        _logger = logger ?? throw new ArgumentException(nameof(logger));
+        _mover = mover ?? throw new ArgumentNullException(nameof(mover));
+        _fileEnumerator = fileEnumerator ?? throw new ArgumentNullException(nameof(fileEnumerator));
     }
 
     public IFilesOrganizer Create(FilesOrganizerOptions options)
     {
         var mapper = new MediaFileMapper(options);
-        var fileMover = new PhysicalFileMover(this.logger);
-        var enumerator = new PhysicalFileEnumerator();
-        var cleanupHandler = new DefaultCleanup(options.SourceRoot, this.logger);
+        var cleanupHandler = new DefaultCleanup(options.SourceRoot, _logger);
 
-        return new Core.MediaOrganizer(options, fileMover, enumerator, mapper, cleanupHandler, FileSystemExtensions.CreateDirectoryIfNotExists, this.logger);
+        return new Core.MediaOrganizer(options, _mover, _fileEnumerator, mapper, cleanupHandler, FileSystemExtensions.CreateDirectoryIfNotExists, _logger);
     }
 }

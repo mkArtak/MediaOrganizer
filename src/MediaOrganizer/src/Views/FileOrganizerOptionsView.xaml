@@ -7,9 +7,6 @@
              xmlns:cv="clr-namespace:MediaOrganizer.Converters"
              mc:Ignorable="d"
              d:DesignWidth="800">
-    <!--<UserControl.DataContext>
-        <vm:FileOrganizerOptionsViewModel />
-    </UserControl.DataContext>-->
     <UserControl.Resources>
         <cv:FileExtensionsArrayToStringConverter x:Key="cvExtensionsToStringConverter" />
     </UserControl.Resources>

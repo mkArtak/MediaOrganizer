@@ -12,7 +12,7 @@ namespace MediaOrganizer.Storage.Local
         private readonly Action<string, string> moveHandler;
         private readonly Action<string, string> copyHandler;
 
-        public PhysicalFileMover(ILogger logger) : this(File.Copy, File.Move, logger)
+        public PhysicalFileMover(ILogger<PhysicalFileMover> logger) : this(File.Copy, File.Move, logger)
         {
         }
 

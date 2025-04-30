@@ -1,12 +1,16 @@
 ﻿using System.Threading.Tasks;
 
-namespace MediaOrganizer.Services
+namespace MediaOrganizer.Services;
+
+public interface IAppStateManager
 {
-    internal interface IAppStateManager
-    {
-        static char ExtensionsSeparator = ':';
-        Task BeginLoadState();
-        Task<T> GetState<T>(string key);
-        void UpdateState<T>(string key, T state);
-    }
+    static char ExtensionsSeparator = ':';
+
+    Task BeginLoadState();
+
+    Task SaveStateAsync();
+
+    Task<T> GetState<T>(string key);
+
+    void UpdateState<T>(string key, T state);
 }

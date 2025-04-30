@@ -1,6 +1,5 @@
 ﻿using MediaOrganizer.Core;
 using MediaOrganizer.Services;
-using MediaOrganizer.Storage.Local;
 using Microsoft.Extensions.Logging;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -16,7 +15,7 @@ public class FileOrganizerViewModel : BindableBase
     public bool isRunning;
     private string currentFile;
 
-    private readonly PhysicalFilesOrganizerFactory organizerFactory;
+    private readonly IOrganizerFactory organizerFactory;
 
     private CancellationTokenSource cancellationToken;
     private Task organizerTask;
@@ -53,9 +52,16 @@ public class FileOrganizerViewModel : BindableBase
         set => SetProperty(ref this.totalProgress, value);
     }
 
-    public FileOrganizerViewModel() : base()
+    public FileOrganizerViewModel(IAppStateManager appStateManager, IOrganizerFactory organizerFactory, ILogger<FileOrganizerViewModel> logger) : base()
     {
-        this.OrganizeFilesCommand = new DelegateCommand(async () =>
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.organizerFactory = organizerFactory ?? throw new ArgumentNullException(nameof(organizerFactory));
+        this.appStateManager = appStateManager ?? throw new ArgumentNullException(nameof(appStateManager));
+
+        this.progress = new Progress<ProgressInfo>(ReportProgress);
+        _loadTask = Task.Run(async () => await InitializeAsync());
+
+        this.OrganizeFilesCommand = new DelegateCommand(() =>
         {
             if (this.IsRunning)
             {
@@ -66,13 +72,6 @@ public class FileOrganizerViewModel : BindableBase
                 this.organizerTask = Organize();
             }
         });
-
-        this.logger = ApplicationLogging.CreateLogger<FileOrganizerViewModel>();
-        this.organizerFactory = new PhysicalFilesOrganizerFactory(this.logger);
-        this.progress = new Progress<ProgressInfo>(ReportProgress);
-
-        this.appStateManager = AppStateManager.Instance;
-        _loadTask = Task.Run(async () => await InitializeAsync());
     }
 
     private async Task InitializeAsync()
@@ -134,22 +133,5 @@ public class FileOrganizerViewModel : BindableBase
         this.CurrentFile = progressInfo.FileName;
         if (progressInfo.TotalFiles != 0)
             this.TotalProgress = progressInfo.CurrentFileIndex * 100 / progressInfo.TotalFiles;
-    }
-
-    internal static class ApplicationLogging
-    {
-        public static ILoggerFactory LogFactory { get; } = LoggerFactory.Create(builder =>
-        {
-            builder.ClearProviders();
-            // Clear Microsoft's default providers (like event logs and others)
-            builder.AddSimpleConsole(options =>
-            {
-                options.IncludeScopes = true;
-                options.SingleLine = true;
-                options.TimestampFormat = "hh:mm:ss ";
-            }).AddDebug().SetMinimumLevel(LogLevel.Information);
-        });
-
-        public static ILogger<T> CreateLogger<T>() => LogFactory.CreateLogger<T>();
     }
 }
