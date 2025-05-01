@@ -16,6 +16,7 @@ internal static class FileOrganizerOptionsStateHelper
         stateManager.UpdateState(nameof(FilesOrganizerOptions.RemoveSource), options.RemoveSource);
         stateManager.UpdateState(nameof(FilesOrganizerOptions.SkipExistingFiles), options.SkipExistingFiles);
         stateManager.UpdateState(nameof(FilesOrganizerOptions.DestinationPattern), options.DestinationPattern);
+        stateManager.UpdateState(nameof(FilesOrganizerOptions.DeleteEmptyFolders), options.DeleteEmptyFolders);
     }
 
     public static async Task<FilesOrganizerOptions> GetFileOrganizerOptionsAsync(IAppStateManager stateManager)
@@ -30,7 +31,8 @@ internal static class FileOrganizerOptionsStateHelper
             DestinationRoot = await GetDestinationRoot(stateManager),
             RemoveSource = await GetRemoveSource(stateManager),
             SkipExistingFiles = await GetSkipExistingFiles(stateManager),
-            DestinationPattern = await GetDestinationPattern(stateManager)
+            DestinationPattern = await GetDestinationPattern(stateManager),
+            DeleteEmptyFolders = await GetDeleteEmptyFolders(stateManager)
         };
     }
 
@@ -73,6 +75,8 @@ internal static class FileOrganizerOptionsStateHelper
 
 
     private static Task<bool> GetSkipExistingFiles(IAppStateManager stateManager) => stateManager.GetState<bool>(nameof(FilesOrganizerOptions.SkipExistingFiles));
+
+    private static Task<bool> GetDeleteEmptyFolders(IAppStateManager stateManager) => stateManager.GetState<bool>(nameof(FilesOrganizerOptions.DeleteEmptyFolders));
 
     private static Task<string> GetDestinationPattern(IAppStateManager stateManager)
     {
