@@ -8,38 +8,32 @@ namespace MediaOrganizer.Core;
 
 public class MediaOrganizer : IFilesOrganizer
 {
-    private readonly Action<string> createDirectoryIfNotExistHandler;
+    private readonly Action<string> _createDirectoryIfNotExistHandler;
 
-    private IFileMover FileMover { get; }
-
-    private IFileEnumerator FileEnumerator { get; }
-
-    private IMapper Mapper { get; }
-
-    private FilesOrganizerOptions Options { get; }
-
-    private FileMoverOptions MoverOptions { get; }
-
-    private ILogger Logger { get; }
-
-    private ICleanup CleanupHandler { get; set; }
+    private readonly IFileMover _fileMover;
+    private readonly IFileEnumerator _fileEnumerator;
+    private readonly IMapper _mapper;
+    private readonly FilesOrganizerOptions _options;
+    private readonly FileMoverOptions _moverOptions;
+    private readonly ILogger _logger;
+    private readonly ICleanup _cleanupHandler;
 
     public MediaOrganizer(FilesOrganizerOptions options, IFileMover mover, IFileEnumerator enumerator, IMapper mapper, ICleanup cleanupHandler, Action<string> createDirectoryIfNotExistHandler, ILogger logger)
     {
-        this.Options = options ?? throw new ArgumentNullException(nameof(options));
-        this.MoverOptions = new FileMoverOptions
+        _options = options ?? throw new ArgumentNullException(nameof(options));
+        _moverOptions = new FileMoverOptions
         {
             RemoveSourceAfterMove = options.RemoveSource,
             SkipIfFileExists = options.SkipExistingFiles,
             DeleteEmptyFolders = options.DeleteEmptyFolders
         };
 
-        this.FileMover = mover ?? throw new ArgumentNullException(nameof(mover));
-        this.FileEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
-        this.Mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        this.Logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        this.createDirectoryIfNotExistHandler = createDirectoryIfNotExistHandler ?? throw new ArgumentNullException(nameof(createDirectoryIfNotExistHandler));
-        this.CleanupHandler = cleanupHandler ?? throw new ArgumentNullException(nameof(cleanupHandler));
+        _fileMover = mover ?? throw new ArgumentNullException(nameof(mover));
+        _fileEnumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _createDirectoryIfNotExistHandler = createDirectoryIfNotExistHandler ?? throw new ArgumentNullException(nameof(createDirectoryIfNotExistHandler));
+        _cleanupHandler = cleanupHandler ?? throw new ArgumentNullException(nameof(cleanupHandler));
     }
 
     public async Task OrganizeAsync(IProgress<ProgressInfo> progress, CancellationToken token)
@@ -47,45 +41,67 @@ public class MediaOrganizer : IFilesOrganizer
         if (token.IsCancellationRequested)
             return;
 
-        this.Logger.LogInformation($"Preparing to move files from {this.Options.SourceRoot} to {this.Options.DestinationRoot}");
+        _logger.LogInformation($"Preparing to move files from {_options.SourceRoot} to {_options.DestinationRoot}");
 
-        createDirectoryIfNotExistHandler(this.Options.SourceRoot);
+        _createDirectoryIfNotExistHandler(_options.SourceRoot);
 
         var counter = 0;
-        var files = this.FileEnumerator.GetFiles(this.Options.SourceRoot);
+        var files = _fileEnumerator.GetFiles(_options.SourceRoot);
         var totalFiles = files.Count();
         if (totalFiles > 0)
         {
-            bool removeEmptyFolders = this.Options.RemoveSource && this.Options.DeleteEmptyFolders;
+            bool removeEmptyFolders = _options.RemoveSource && _options.DeleteEmptyFolders;
 
             foreach (string file in files)
             {
                 if (token.IsCancellationRequested)
                     break;
 
-                if (!this.Mapper.TryGetDestination(file, out var destinationPath))
+                if (!_mapper.TryGetDestination(file, out var destinationPath))
                 {
-                    this.Logger.LogWarning($"Skipping file as it didn't match any of the extension patterns: {file}");
+                    _logger.LogWarning($"Skipping file as it didn't match any of the extension patterns: {file}");
                     continue;
                 }
 
                 if (removeEmptyFolders)
-                    this.CleanupHandler.Track(file);
-
-                await this.FileMover.MoveAsync(this.MoverOptions, file, destinationPath);
+                    _cleanupHandler.Track(file);
 
                 counter++;
-                progress.Report(new ProgressInfo(file, totalFiles, counter));
+
+                ProgressInfo progressToReport;
+                try
+                {
+                    await _fileMover.MoveAsync(_moverOptions, file, destinationPath);
+                    progressToReport = new ProgressInfo(file, totalFiles, counter);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Failed to organize file {file}. Reason: {ex.Message}");
+                    progressToReport = new ProgressInfo(file, totalFiles, counter, false);
+                }
+
+                progress.Report(progressToReport);
             }
 
             if (removeEmptyFolders)
-                await this.CleanupHandler.RemoveEmptyFolders(progress);
+            {
+                _logger.LogInformation("Preparing to remove empty folders");
+                try
+                {
+                    await _cleanupHandler.RemoveEmptyFolders(progress);
+                    _logger.LogInformation("Successfully removed empty folders");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Removal of empty folders failed with error {ex.Message}");
+                }
+            }
+
+            _logger.LogInformation("Finished organizing files");
         }
         else
         {
-            this.Logger.LogWarning($"No files found in {this.Options.SourceRoot} to move.");
+            _logger.LogWarning($"No files found in {_options.SourceRoot} to move.");
         }
-
-        this.Logger.LogInformation("Finished moving files");
     }
 }
