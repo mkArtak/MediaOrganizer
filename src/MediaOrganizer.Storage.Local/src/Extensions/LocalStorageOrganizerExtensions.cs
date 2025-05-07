@@ -1,7 +1,7 @@
 ﻿using MediaOrganizer.Core;
-using Microsoft.Extensions.DependencyInjection;
+using MediaOrganizer.Storage.Local;
 
-namespace MediaOrganizer.Storage.Local;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class LocalStorageOrganizerExtensions
 {

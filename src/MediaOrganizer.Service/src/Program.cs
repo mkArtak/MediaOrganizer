@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddLocalStorageServices();
+builder.Services.AddLocalStorageOrganizer();
 builder.Services.AddHostedService<Worker>();
 
 IConfiguration configuration = builder.Configuration;
