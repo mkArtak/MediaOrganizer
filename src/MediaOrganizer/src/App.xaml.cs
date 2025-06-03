@@ -1,5 +1,4 @@
 ﻿using MediaOrganizer.Services;
-using MediaOrganizer.Storage.Local.Extensions;
 using MediaOrganizer.ViewModels;
 using MediaOrganizer.Views;
 using Microsoft.Extensions.DependencyInjection;

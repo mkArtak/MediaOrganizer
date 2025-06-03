@@ -59,7 +59,7 @@ public class FileOrganizerViewModel : BindableBase
         this.appStateManager = appStateManager ?? throw new ArgumentNullException(nameof(appStateManager));
 
         this.progress = new Progress<ProgressInfo>(ReportProgress);
-        _loadTask = Task.Run(async () => await InitializeAsync());
+        _loadTask = InitializeAsync();
 
         this.OrganizeFilesCommand = new DelegateCommand(() =>
         {
