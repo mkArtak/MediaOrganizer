@@ -1,26 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MediaOrganizer.Core
 {
     public class FilesOrganizerOptions
     {
-        public static readonly string DefaultVideoSubfolderName = "Movies";
-
-        public static readonly string DefaultPhotosSubfolderName = "Photos";
-
         public static readonly string DefaultDestinationPattern = "{Year}/{MonthName}/{Year}-{Month}-{Day}";
 
-        public static readonly string[] DefaultVideoFileFormatPatterns = { ".mov", ".mp4", ".avi", ".3gp", ".mpg", ".mkv", ".wmv", ".flv", ".m4v", ".webm" };
+        public static readonly string WellKnownMediaCategoriesKey = "configuredMediaCategories";
 
-        public static readonly string[] DefaultPhotoFileFormatPatterns = { ".jpg", ".jpeg", ".png", ".heic", ".bmp", ".gif", ".tiff", ".tif", ".webp" };
-
-        public string[] VideoFileFormatPatterns { get; set; } = DefaultVideoFileFormatPatterns;
-
-        public string[] ImageFileFormatPatterns { get; set; } = DefaultPhotoFileFormatPatterns;
-
-        public string VideoSubfolderName { get; set; } = DefaultVideoSubfolderName;
-
-        public string PhotosSubfolderName { get; set; } = DefaultPhotosSubfolderName;
+        public List<MediaCategory> MediaCategories { get; } = new List<MediaCategory>();
 
         public string SourceRoot { get; set; }
 
@@ -36,7 +25,7 @@ namespace MediaOrganizer.Core
 
         public override string ToString()
         {
-            return $"VideoSubfolderName: {VideoSubfolderName}{Environment.NewLine}PhotoSubfolderName: {PhotosSubfolderName}{Environment.NewLine}SourceRoot: {SourceRoot}{Environment.NewLine}DestinationRoot: {DestinationRoot}{Environment.NewLine}RemoveSource: {RemoveSource}{Environment.NewLine}SkipExistingFiles: {SkipExistingFiles}{Environment.NewLine}DeleteEmptyFolders: {DeleteEmptyFolders}";
+            return $"SourceRoot: {SourceRoot}{Environment.NewLine}DestinationRoot: {DestinationRoot}{Environment.NewLine}RemoveSource: {RemoveSource}{Environment.NewLine}SkipExistingFiles: {SkipExistingFiles}{Environment.NewLine}DeleteEmptyFolders: {DeleteEmptyFolders}";
         }
     }
 }

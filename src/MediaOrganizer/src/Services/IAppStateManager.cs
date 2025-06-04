@@ -6,7 +6,7 @@ public interface IAppStateManager
 {
     static char KeyValueSeparator = ':';
 
-    static char ExtensionsSeparator = ';';
+    static char ArrayElementsSeparator = ';';
 
     Task BeginLoadState();
 
