@@ -1,5 +1,7 @@
 ﻿using MediaOrganizer.Core;
 using Prism.Mvvm;
+using Prism.Commands;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
 namespace MediaOrganizer.ViewModels
@@ -12,7 +14,10 @@ namespace MediaOrganizer.ViewModels
         private bool skipExistingFiles;
         private string destinationPattern = "{Year}/{MonthName}/{Year}-{Month}-{Day}";
         private bool deleteEmptyFolders;
-        private List<MediaCategory> mediaCategories;
+        private ObservableCollection<MediaCategory> mediaCategories = new();
+        
+        public DelegateCommand AddCategoryCommand { get; }
+        public DelegateCommand<MediaCategory> RemoveCategoryCommand { get; }
 
         public bool SkipExistingFiles { get => skipExistingFiles; set => SetProperty(ref skipExistingFiles, value); }
 
@@ -26,11 +31,12 @@ namespace MediaOrganizer.ViewModels
 
         public string DestinationPattern { get => destinationPattern; set => SetProperty(ref destinationPattern, value); }
 
-        public List<MediaCategory> MediaCategories { get => mediaCategories; set => SetProperty(ref mediaCategories, value); }
+        public ObservableCollection<MediaCategory> MediaCategories { get => mediaCategories; set => SetProperty(ref mediaCategories, value); }
 
         public FileOrganizerOptionsViewModel() : base()
         {
-
+            this.AddCategoryCommand = new DelegateCommand(AddCategory);
+            this.RemoveCategoryCommand = new DelegateCommand<MediaCategory>(RemoveCategory);
         }
 
         public FileOrganizerOptionsViewModel(FilesOrganizerOptions options) : base()
@@ -41,7 +47,10 @@ namespace MediaOrganizer.ViewModels
             this.SkipExistingFiles = options.SkipExistingFiles;
             this.DestinationPattern = options.DestinationPattern;
             this.DeleteEmptyFolders = options.DeleteEmptyFolders;
-            this.MediaCategories = options.MediaCategories;
+            this.MediaCategories = new ObservableCollection<MediaCategory>(options.MediaCategories);
+
+            this.AddCategoryCommand = new DelegateCommand(AddCategory);
+            this.RemoveCategoryCommand = new DelegateCommand<MediaCategory>(RemoveCategory);
         }
 
         public FilesOrganizerOptions GetOptions()
@@ -59,6 +68,24 @@ namespace MediaOrganizer.ViewModels
             result.MediaCategories.AddRange(this.MediaCategories ?? new List<MediaCategory>());
 
             return result;
+        }
+
+        private void AddCategory()
+        {
+            MediaCategories.Add(new MediaCategory
+            {
+                CategoryName = "New Category",
+                CategoryRoot = string.Empty,
+                FileExtensions = []
+            });
+        }
+
+        private void RemoveCategory(MediaCategory category)
+        {
+            if (category is not null)
+            {
+                MediaCategories.Remove(category);
+            }
         }
     }
 }

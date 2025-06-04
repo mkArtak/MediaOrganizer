@@ -13,18 +13,24 @@
 
     <StackPanel Margin="10">
         <TextBlock Text="Folder Naming" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,5" />
-        <TextBlock Text="Movies Root Folder Name:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding VideoSubfolderName, Mode=TwoWay}" ToolTip="The name of the folder under which all the movies will be organized." Margin="0,0,0,5" />
-        <TextBlock Text="Photos Root Folder Name:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding PhotosSubfolderName, Mode=TwoWay}" ToolTip="The name of the folder under which all the photos will be organized." Margin="0,0,0,5" />
+        <TextBlock Text="Media Categories:" FontWeight="SemiBold" Margin="0,6,0,2" />
+        <DataGrid ItemsSource="{Binding MediaCategories}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,0,0,5">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding CategoryName, Mode=TwoWay}" Width="*" />
+                <DataGridTextColumn Header="Folder" Binding="{Binding CategoryRoot, Mode=TwoWay}" Width="*" />
+                <DataGridTextColumn Header="Extensions" Binding="{Binding FileExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" Width="*" />
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Remove" Command="{Binding DataContext.RemoveCategoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Add Category" Command="{Binding AddCategoryCommand}" HorizontalAlignment="Left" Width="100" Margin="0,0,0,10" />
         <TextBlock Text="Destination Folder Structure:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding DestinationPattern, Mode=TwoWay}" ToolTip="Define how organized folders will be created using placeholders like {Year}\\{Month}\\{Day}." Margin="0,0,0,10" />
-
-        <TextBlock Text="File Type Settings" FontSize="13" FontWeight="SemiBold" Margin="0,15,0,5" />
-        <TextBlock Text="Photo Extensions:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding PhotoExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" ToolTip="Comma-separated list of file extensions considered as photos." Margin="0,0,0,5" />
-        <TextBlock Text="Movie Extensions:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding VideoExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" ToolTip="Comma-separated list of file extensions considered as movies." Margin="0,0,0,10" />
+        <TextBox Text="{Binding DestinationPattern, Mode=TwoWay}" ToolTip="Define how organized folders will be created using placeholders like {Year}\{Month}\{Day}." Margin="0,0,0,10" />
 
         <GroupBox Header="File Handling Options" Margin="0,10,0,0">
             <GroupBox.Resources>
