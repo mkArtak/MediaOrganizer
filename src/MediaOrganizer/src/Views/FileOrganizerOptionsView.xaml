@@ -39,5 +39,8 @@
             </StackPanel>
         </GroupBox>
 
+        <Button Content="Manage Categories..." HorizontalAlignment="Left" Margin="0,5,0,0" Click="ManageCategories_Click" />
+
     </StackPanel>
 </UserControl>
+

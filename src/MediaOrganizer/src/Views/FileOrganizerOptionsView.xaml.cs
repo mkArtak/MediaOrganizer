@@ -22,5 +22,17 @@ namespace MediaOrganizer.Views
         {
             InitializeComponent();
         }
+
+        private void ManageCategories_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new CategoryManagerWindow
+            {
+                Owner = Window.GetWindow(this),
+                DataContext = this.DataContext,
+            };
+
+            window.ShowDialog();
+        }
     }
 }
+
