@@ -70,6 +70,7 @@ public class MediaCategoryEditorViewModel : BindableBase
         _mediaCategory = category;
 
         _categoryName = _mediaCategory?.CategoryName ?? string.Empty;
+        _categoryRoot = _mediaCategory?.CategoryRoot ?? string.Empty;
         _extensions = _mediaCategory?.FileExtensions is null ? new ObservableCollection<string>() : new ObservableCollection<string>(category.FileExtensions);
 
         _onSave = onSave ?? throw new ArgumentNullException(nameof(onSave));

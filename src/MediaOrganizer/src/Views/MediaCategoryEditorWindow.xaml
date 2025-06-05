@@ -44,7 +44,6 @@
 
         <Style x:Key="SaveButtonStyle" TargetType="Button" BasedOn="{StaticResource DialogButtonStyle}">
             <Setter Property="Background" Value="#E6F4EA"/>
-            <!-- light green tint -->
             <Setter Property="BorderBrush" Value="#A4D4AE"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
