@@ -8,6 +8,10 @@ using System.Windows.Input;
 
 namespace MediaOrganizer.ViewModels;
 
+public delegate bool MediaCategoryValidateEventHandler(MediaCategory existingCategory, MediaCategory newCategory);
+
+public delegate void SaveMediaCategoryEventHandler(MediaCategory existingCategory, MediaCategory newCategory);
+
 public class MediaCategoryEditorViewModel : BindableBase
 {
     private readonly MediaCategory _mediaCategory;
@@ -15,10 +19,9 @@ public class MediaCategoryEditorViewModel : BindableBase
     private string _categoryName;
     private string _categoryRoot;
     private ObservableCollection<string> _extensions = new();
-
-    private readonly Action<MediaCategory> _onSave;
+    private readonly SaveMediaCategoryEventHandler _onSave;
     private readonly Action<MediaCategory> _onDelete;
-    private readonly Predicate<MediaCategory> _validator;
+    private readonly MediaCategoryValidateEventHandler _validator;
 
     public string CategoryName
     {
@@ -58,20 +61,20 @@ public class MediaCategoryEditorViewModel : BindableBase
         }
     }
 
-    public MediaCategoryEditorViewModel() : this(new MediaCategory(), cat => true, cat => { }, catToDelete => { })
+    public MediaCategoryEditorViewModel() : this(new MediaCategory(), (cat, isNew) => true, (old, @new) => { }, catToDelete => { })
     {
     }
 
-    public MediaCategoryEditorViewModel(MediaCategory category, Predicate<MediaCategory> validator, Action<MediaCategory> onSave, Action<MediaCategory> onDelete)
+    public MediaCategoryEditorViewModel(MediaCategory category, MediaCategoryValidateEventHandler validator, SaveMediaCategoryEventHandler onSave, Action<MediaCategory> onDelete)
     {
-        _mediaCategory = category ?? throw new ArgumentNullException(nameof(category));
+        _mediaCategory = category;
 
-        _categoryName = category.CategoryName ?? string.Empty;
-        _extensions = category.FileExtensions == null ? new ObservableCollection<string>() : new ObservableCollection<string>(category.FileExtensions);
+        _categoryName = _mediaCategory?.CategoryName ?? string.Empty;
+        _extensions = _mediaCategory?.FileExtensions is null ? new ObservableCollection<string>() : new ObservableCollection<string>(category.FileExtensions);
 
         _onSave = onSave ?? throw new ArgumentNullException(nameof(onSave));
         _onDelete = onDelete ?? throw new ArgumentNullException(nameof(onDelete));
-        _validator = validator ?? (_ => true);
+        _validator = validator ?? ((_, _) => true);
 
         SaveCommand = new DelegateCommand(Save, CanSave)
             .ObservesProperty(() => CategoryName)
@@ -91,9 +94,9 @@ public class MediaCategoryEditorViewModel : BindableBase
     {
         MediaCategory category = GetCategory();
 
-        if (_validator(category))
+        if (_validator(_mediaCategory, category))
         {
-            _onSave(category);
+            _onSave(_mediaCategory, category);
         }
     }
 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MediaOrganizer.Views"
         xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
         mc:Ignorable="d"
-        Title="MediaCategoryEditorWindow" Height="450" Width="800">
+        Title="Media Organizer: Manage Category" Height="250" Width="600">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter" />
     </Window.Resources>
@@ -19,6 +19,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -26,26 +27,22 @@
         </Grid.ColumnDefinitions>
 
         <!-- Category Name -->
-        <TextBlock Text="Category Name:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8"/>
+        <TextBlock Text="Category Name:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
         <TextBox Text="{Binding CategoryName, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8"/>
 
         <!-- Category Root -->
         <TextBlock Text="Category Root:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8"/>
-        <TextBox Text="{Binding CategoryRoot, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8"
-         ToolTip="Optional base folder path associated with this category" />
+        <TextBox Text="{Binding CategoryRoot, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" ToolTip="Optional base folder path associated with this category" />
 
         <!-- Extensions -->
         <TextBlock Text="Extensions:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8"/>
-        <TextBox Text="{Binding ExtensionsText, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8"
-                 ToolTip="Comma-separated list, e.g. .jpg, .png, .jpeg"/>
+        <TextBox Text="{Binding ExtensionsText, Mode=TwoWay}" TextWrapping="Wrap" Height="60" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" ToolTip="Comma-separated list, e.g. .jpg, .png, .jpeg"/>
 
         <!-- Buttons -->
-        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
             <Button Content="Save" Width="80" Margin="4,0" IsDefault="True" Command="{Binding SaveCommand}" />
             <Button Content="Cancel" Width="80" Margin="4,0" IsCancel="True" />
-            <Button Content="Delete" Width="80" Margin="16,0,0,0" 
-                    Foreground="Red" Visibility="{Binding ShowDeleteButton, Converter={StaticResource cvBoolenToVisibilityConverter}}"
-                    Command="{Binding DeleteCommand}"/>
+            <Button Content="Delete" Width="80" Margin="16,0,0,0" Foreground="Red" Visibility="{Binding ShowDeleteButton, Converter={StaticResource cvBoolenToVisibilityConverter}}" Command="{Binding DeleteCommand}"/>
         </StackPanel>
     </Grid>
 </Window>

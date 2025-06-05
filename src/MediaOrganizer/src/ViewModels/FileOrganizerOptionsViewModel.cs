@@ -1,7 +1,6 @@
 ﻿using MediaOrganizer.Core;
 using MediaOrganizer.Views;
 using Prism.Commands;
-using Prism.Dialogs;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
@@ -75,7 +74,7 @@ public class FileOrganizerOptionsViewModel : BindableBase
 
     private void OnAddCategory()
     {
-        ShowCategoryEditorDialog(new MediaCategory());
+        ShowCategoryEditorDialog(null);
     }
 
     private void OnEditCategory(MediaCategory category)
@@ -89,7 +88,7 @@ public class FileOrganizerOptionsViewModel : BindableBase
     private void ShowCategoryEditorDialog(MediaCategory category)
     {
         var vm = new MediaCategoryEditorViewModel(category, ValidateCategory,
-            onSave: cat => { MediaCategories.Add(cat); _currentDialog.Close(); },
+            onSave: OnSaveCategory,
             onDelete: cat => { MediaCategories.Remove(MediaCategories.Single(c => c.CategoryName == cat.CategoryName)); _currentDialog.Close(); }
             );
 
@@ -101,25 +100,39 @@ public class FileOrganizerOptionsViewModel : BindableBase
         _currentDialog = null;
     }
 
-    private bool ValidateCategory(MediaCategory category)
+    private void OnSaveCategory(MediaCategory existingCategory, MediaCategory newCategory)
+    {
+        if (existingCategory is not null)
+            MediaCategories.Remove(existingCategory);
+
+        MediaCategories.Add(newCategory);
+
+        _currentDialog.Close();
+    }
+
+    private bool ValidateCategory(MediaCategory originalCategory, MediaCategory newCategory)
     {
         // The validation is done in two steps:
         // 1. Check if another category with the same name already exists
         // 2. Check if any other category has an extension defined by this category
-        if (string.IsNullOrWhiteSpace(category.CategoryName))
+        if (string.IsNullOrWhiteSpace(newCategory.CategoryName))
             return false;
 
-        if (mediaCategories.Any(cat => cat.CategoryName.Equals(category.CategoryName, StringComparison.InvariantCultureIgnoreCase)))
-            return false;
-
-        // The expectations is that there is only a small number of categories and each will have only a small number of extensions. Hence, these iterative brute-force approach is ok.
+        // The expectations is that there is only a small number of categories and each will have only a small number of extensions.
+        // Hence, these iterative brute-force approach is ok.
         foreach (var cat in mediaCategories)
         {
-            foreach (var extension in cat.FileExtensions)
+            if (cat == originalCategory)
+                continue; // Skip the original category being edited
+
+            if (cat.CategoryName.Equals(newCategory.CategoryName, StringComparison.InvariantCultureIgnoreCase))
+                return false; // Duplicate category name found
+
+            foreach (var existingExtension in cat.FileExtensions)
             {
-                foreach (var newExtension in category.FileExtensions)
+                foreach (var newExtension in newCategory.FileExtensions)
                 {
-                    if (extension.Equals(newExtension, StringComparison.InvariantCultureIgnoreCase))
+                    if (existingExtension.Equals(newExtension, StringComparison.InvariantCultureIgnoreCase))
                     {
                         return false; // Duplicate extension found
                     }

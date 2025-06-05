@@ -2,6 +2,67 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#FF007ACC"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF3399FF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Modern TextBox Style -->
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="6,3" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+            <Setter Property="BorderBrush" Value="#FFCCCCCC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="0" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern GroupBox Style -->
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="0,10,0,10" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GroupBox">
+                        <Border Background="#FFF9F9F9" BorderBrush="#FFCCCCCC" BorderThickness="1" CornerRadius="8" Padding="10">
+                            <StackPanel>
+                                <TextBlock Text="{TemplateBinding Header}" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,10" />
+                                <ContentPresenter Margin="0" />
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <!-- Header Style for Section Titles -->
         <Style x:Key="SectionHeaderTextBlockStyle" TargetType="TextBlock">
