@@ -92,7 +92,7 @@
 
         <!-- Extensions -->
         <TextBlock Text="Extensions:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8"/>
-        <TextBox Text="{Binding ExtensionsText, Mode=TwoWay}" TextWrapping="Wrap" Height="60" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" ToolTip="Comma-separated list, e.g. .jpg, .png, .jpeg"/>
+        <TextBox Text="{Binding ExtensionsText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="60" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" ToolTip="Comma-separated list, e.g. .jpg, .png, .jpeg"/>
 
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0" Height="30">
             <Button Content="Save" Style="{StaticResource SaveButtonStyle}" Margin="12,0" IsDefault="True" Command="{Binding SaveCommand}" />
