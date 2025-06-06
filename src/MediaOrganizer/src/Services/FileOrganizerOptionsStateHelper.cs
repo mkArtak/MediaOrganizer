@@ -1,4 +1,5 @@
 ﻿using MediaOrganizer.Core;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -36,7 +37,8 @@ internal static class FileOrganizerOptionsStateHelper
 
     private static async Task<IEnumerable<MediaCategory>> GetMediaCategories(IAppStateManager stateManager)
     {
-        var storedMediaCategoryNames = await stateManager.GetState<string[]>(FilesOrganizerOptions.WellKnownMediaCategoriesKey);
+        var storedMediaCategoryNamesString = await stateManager.GetState<string>(FilesOrganizerOptions.WellKnownMediaCategoriesKey);
+        var storedMediaCategoryNames = storedMediaCategoryNamesString?.Split(IAppStateManager.ArrayElementsSeparator, StringSplitOptions.RemoveEmptyEntries);
         if (storedMediaCategoryNames is null || storedMediaCategoryNames.Length == 0)
         {
             // If no media categories are configured, return the default ones
@@ -89,7 +91,7 @@ internal static class FileOrganizerOptionsStateHelper
             categoryNames.Add(category.CategoryName);
         }
 
-        stateManager.UpdateState(FilesOrganizerOptions.WellKnownMediaCategoriesKey, categoryNames.ToArray());
+        stateManager.UpdateState(FilesOrganizerOptions.WellKnownMediaCategoriesKey, String.Join(IAppStateManager.ArrayElementsSeparator, categoryNames));
     }
 
     private static void SaveMediaCategoryOptions(MediaCategory category, IAppStateManager stateManager)
