@@ -1,19 +1,22 @@
 ﻿using MediaOrganizer.Core;
 using Prism.Commands;
-using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 
 namespace MediaOrganizer.ViewModels;
 
-public delegate bool MediaCategoryValidateEventHandler(MediaCategory existingCategory, MediaCategory newCategory);
+public delegate bool MediaCategoryValidateEventHandler(MediaCategory existingCategory, MediaCategory newCategory, out Dictionary<string, string> errors);
 
 public delegate void SaveMediaCategoryEventHandler(MediaCategory existingCategory, MediaCategory newCategory);
 
-public class MediaCategoryEditorViewModel : BindableBase
+public class MediaCategoryEditorViewModel : ValidatableObjectBase
 {
+    private static readonly HashSet<char> invalidCharacters = new HashSet<char>(Path.GetInvalidFileNameChars());
+
     private readonly MediaCategory _mediaCategory;
 
     private string _categoryName;
@@ -21,7 +24,7 @@ public class MediaCategoryEditorViewModel : BindableBase
     private ObservableCollection<string> _extensions = new();
     private readonly SaveMediaCategoryEventHandler _onSave;
     private readonly Action<MediaCategory> _onDelete;
-    private readonly MediaCategoryValidateEventHandler _validator;
+    private readonly MediaCategoryValidateEventHandler _validateCategory;
 
     public string CategoryName
     {
@@ -41,7 +44,10 @@ public class MediaCategoryEditorViewModel : BindableBase
         set
         {
             if (SetProperty(ref _extensions, value))
+            {
                 RaisePropertyChanged(nameof(ExtensionsText));
+                ValidateExtensions();
+            }
         }
     }
 
@@ -51,17 +57,22 @@ public class MediaCategoryEditorViewModel : BindableBase
         set
         {
             var cleaned = value?
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Split([',', ';'], StringSplitOptions.RemoveEmptyEntries)
                 .Select(e => e.Trim())
                 .Where(e => !string.IsNullOrWhiteSpace(e))
                 .Distinct()
                 .ToList() ?? new();
-
             Extensions = new ObservableCollection<string>(cleaned);
         }
     }
 
-    public MediaCategoryEditorViewModel() : this(new MediaCategory(), (cat, isNew) => true, (old, @new) => { }, catToDelete => { })
+    private static bool NoOpValidator(MediaCategory old, MediaCategory @new, out Dictionary<string, string> errors)
+    {
+        errors = null;
+        return true;
+    }
+
+    public MediaCategoryEditorViewModel() : this(new MediaCategory(), null, (old, @new) => { }, catToDelete => { })
     {
     }
 
@@ -75,17 +86,15 @@ public class MediaCategoryEditorViewModel : BindableBase
 
         _onSave = onSave ?? throw new ArgumentNullException(nameof(onSave));
         _onDelete = onDelete ?? throw new ArgumentNullException(nameof(onDelete));
-        _validator = validator ?? ((_, _) => true);
+        _validateCategory = validator ?? NoOpValidator;
 
-        SaveCommand = new DelegateCommand(Save, CanSave)
-            .ObservesProperty(() => CategoryName)
-            .ObservesProperty(() => ExtensionsText);
+        SaveCommand = new DelegateCommand(Save);
 
         DeleteCommand = new DelegateCommand(Delete)
             .ObservesCanExecute(() => ShowDeleteButton);
     }
 
-    public bool ShowDeleteButton => !string.IsNullOrWhiteSpace(CategoryName);
+    public bool ShowDeleteButton => _mediaCategory is not null;
 
     public ICommand SaveCommand { get; }
 
@@ -93,22 +102,85 @@ public class MediaCategoryEditorViewModel : BindableBase
 
     private void Save()
     {
-        MediaCategory category = GetCategory();
-
-        if (_validator(_mediaCategory, category))
+        if (ValidateAll())
         {
-            _onSave(_mediaCategory, category);
+            MediaCategory category = GetCategory();
+
+            if (_validateCategory(_mediaCategory, category, out var errors))
+                _onSave(_mediaCategory, category);
+            else
+                ReportExternalErrors(errors);
         }
+    }
+
+    private void ReportExternalErrors(Dictionary<string, string> errors)
+    {
+        foreach (var error in errors)
+        {
+            var key = error.Key;
+            if (key == nameof(MediaCategory.FileExtensions))
+                key = nameof(ExtensionsText);
+
+            ClearErrors(key);
+            AddError(key, error.Value);
+        }
+    }
+
+    private bool ValidateAll()
+    {
+        ValidateCategoryName();
+        ValidateCategoryRoot();
+        ValidateExtensions();
+
+        return !HasErrors;
+    }
+
+    private void ValidateCategoryName()
+    {
+        ClearErrors(nameof(CategoryName));
+
+        if (string.IsNullOrWhiteSpace(CategoryName))
+        {
+            AddError(nameof(CategoryName), "Category name cannot be empty");
+        }
+    }
+
+    private void ValidateCategoryRoot()
+    {
+        ClearErrors(nameof(CategoryRoot));
+
+        if (!UsesValidCharacters(CategoryRoot))
+            AddError(nameof(CategoryRoot), $"Category root contains one or more invalid characters");
+    }
+
+    private void ValidateExtensions()
+    {
+        ClearErrors(nameof(ExtensionsText));
+
+        if (Extensions.Count == 0)
+            AddError(nameof(ExtensionsText), "At least one file extension is required.");
+        else
+        {
+            foreach (var extension in Extensions)
+                if (!UsesValidCharacters(extension))
+                    AddError(nameof(ExtensionsText), $"Extension {extension} contains one or more invalid characters");
+        }
+    }
+
+    private bool UsesValidCharacters(string path)
+    {
+        foreach (char c in path)
+        {
+            if (invalidCharacters.Contains(c))
+                return false;
+        }
+
+        return true;
     }
 
     private void Delete()
     {
         _onDelete(this.GetCategory());
-    }
-
-    private bool CanSave()
-    {
-        return !string.IsNullOrWhiteSpace(CategoryName) && Extensions.Any();
     }
 
     private MediaCategory GetCategory() => new MediaCategory

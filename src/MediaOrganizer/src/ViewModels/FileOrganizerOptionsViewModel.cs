@@ -3,6 +3,7 @@ using MediaOrganizer.Views;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -110,14 +111,15 @@ public class FileOrganizerOptionsViewModel : BindableBase
         _currentDialog.Close();
     }
 
-    private bool ValidateCategory(MediaCategory originalCategory, MediaCategory newCategory)
+    private bool ValidateCategory(MediaCategory originalCategory, MediaCategory newCategory, out Dictionary<string, string> errors)
     {
+        ///TODO: This is not an optimal implementation as we break on the first error.
+        /// Improve this later to allow reporting all errors
+        errors = new Dictionary<string, string>();
+
         // The validation is done in two steps:
         // 1. Check if another category with the same name already exists
         // 2. Check if any other category has an extension defined by this category
-        if (string.IsNullOrWhiteSpace(newCategory.CategoryName))
-            return false;
-
         // The expectations is that there is only a small number of categories and each will have only a small number of extensions.
         // Hence, these iterative brute-force approach is ok.
         foreach (var cat in mediaCategories)
@@ -126,7 +128,10 @@ public class FileOrganizerOptionsViewModel : BindableBase
                 continue; // Skip the original category being edited
 
             if (cat.CategoryName.Equals(newCategory.CategoryName, StringComparison.InvariantCultureIgnoreCase))
-                return false; // Duplicate category name found
+            {
+                errors.Add(nameof(MediaCategory.CategoryName), "A category with the chosen name already exists. Please use a different name.");
+                return false;
+            }
 
             foreach (var existingExtension in cat.FileExtensions)
             {
@@ -134,7 +139,8 @@ public class FileOrganizerOptionsViewModel : BindableBase
                 {
                     if (existingExtension.Equals(newExtension, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        return false; // Duplicate extension found
+                        errors.Add(nameof(MediaCategory.FileExtensions), $"Extension `{newExtension}` is used in category {cat.CategoryName}.");
+                        return false;
                     }
                 }
             }
