@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MediaOrganizer.Views"
         xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
+        xmlns:uc="clr-namespace:MediaOrganizer.Controls"
         mc:Ignorable="d"
-        Title="Media Organizer: Manage Category" MinHeight="260" Height="260" MinWidth="600" Width="600">
+        Title="Create or edit a category" MinHeight="260" Height="260" MinWidth="600" Width="600">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter" />
 
@@ -80,33 +81,26 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <!-- Category Name -->
         <TextBlock Text="Category Name:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
-        <TextBox Text="{Binding CategoryName, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8"/>
+        <TextBox Text="{Binding CategoryName, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" />
+        <uc:FieldInfo InformationText="The name of the category. Choose a relatively short one, something up to 10 characters in length." Grid.Row="0" Grid.Column="2"/>
 
         <!-- Category Root -->
         <TextBlock Text="Category Root:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8"/>
         <TextBox Text="{Binding CategoryRoot, Mode=TwoWay, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" ToolTip="Optional base folder path associated with this category" />
+        <uc:FieldInfo InformationText="An optional name for the directory, to be used as a root for all the matching media files. If specified, any matching file will be organized under this folder, following the rest of the rules that are specified." Grid.Row="1" Grid.Column="2"/>
 
         <!-- Extensions -->
         <TextBlock Text="Extensions:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8"/>
         <TextBox Text="{Binding ExtensionsText, Mode=TwoWay,ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" TextWrapping="Wrap" Height="60" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" ToolTip="Comma-separated list, e.g. .jpg, .png, .jpeg">
-            <TextBox.Style>
-                <Style TargetType="TextBox">
-                    <Style.Triggers>
-                        <Trigger Property="Validation.HasError" Value="True">
-                            <Setter Property="ToolTip"
-     Value="{Binding RelativeSource={RelativeSource Self},
-                     Path=(Validation.Errors)[0].ErrorContent}" />
-                            <Setter Property="BorderBrush" Value="Red" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-
-            </TextBox.Style>
+            
         </TextBox>
+        <uc:FieldInfo InformationText="Comma-separated list of extensions to include as part of this category. (.img, .jpg, ...)" Grid.Row="2" Grid.Column="2" Margin="0, 32, 0 ,0"/>
+
 
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0" Height="30">
             <Button Content="Save" Style="{StaticResource SaveButtonStyle}" Margin="12,0" IsDefault="True" Command="{Binding SaveCommand}" />

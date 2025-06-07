@@ -29,13 +29,25 @@ public class MediaCategoryEditorViewModel : ValidatableObjectBase
     public string CategoryName
     {
         get => _categoryName;
-        set => SetProperty(ref _categoryName, value);
+        set
+        {
+            if (SetProperty(ref _categoryName, value))
+            {
+                ValidateCategoryName();
+            }
+        }
     }
 
     public string CategoryRoot
     {
         get => _categoryRoot;
-        set => SetProperty(ref _categoryRoot, value);
+        set
+        {
+            if (SetProperty(ref _categoryRoot, value))
+            {
+                ValidateCategoryRoot();
+            }
+        }
     }
 
     public ObservableCollection<string> Extensions
