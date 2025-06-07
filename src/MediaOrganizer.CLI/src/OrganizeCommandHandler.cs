@@ -26,31 +26,22 @@ internal class OrganizeCommandHandler : RootCommand, ICommandHandler
     {
         IsRequired = false
     };
-    private readonly Option<string> videoSubfolderNameOption = new Option<string>("--video-subfolder-name", () => FilesOrganizerOptions.DefaultVideoSubfolderName, "The name of the subfolder to organize video files under.")
+
+    private readonly Option<string[]> mediaExtensionsOption = new Option<string[]>("--media-extensions", () => Array.Empty<string>(), "The file extensions that will be be organized under the specified destination directory.")
     {
-        IsRequired = false,
-    };
-    private readonly Option<string> photosSubfolderNameOption = new Option<string>("--photos-subfolder-name", () => FilesOrganizerOptions.DefaultPhotosSubfolderName, "The name of the subfolder to organize photo files under.")
-    {
-        IsRequired = false,
-    };
-    private readonly Option<string[]> imageFileFormatPatternsOption = new Option<string[]>("--image-file-format-patterns", () => FilesOrganizerOptions.DefaultPhotoFileFormatPatterns, "The file formats to consider as images.")
-    {
-        IsRequired = false,
-    };
-    private readonly Option<string[]> videoFileFormatPatternsOption = new Option<string[]>("--video-file-format-patterns", () => FilesOrganizerOptions.DefaultVideoFileFormatPatterns, "The file formats to consider as videos.")
-    {
-        IsRequired = false,
+        IsRequired = true,
     };
 
     private readonly Option<string> destinationPatternOption = new Option<string>("--destination-pattern", () => FilesOrganizerOptions.DefaultDestinationPattern, "The pattern to use for organizing files in the destination folder.")
     {
         IsRequired = false
     };
+
     private readonly Option<bool> deleteEmptyFoldersOption = new Option<bool>("--delete-empty-folders", () => true, "Delete empty folders after moving files.")
     {
         IsRequired = false
     };
+
     private readonly IOrganizerFactory _organizerFactory;
     private readonly ILogger _logger;
 
@@ -63,10 +54,7 @@ internal class OrganizeCommandHandler : RootCommand, ICommandHandler
         AddOption(destinationOption);
         AddOption(removeSourceOption);
         AddOption(skipExistingOption);
-        AddOption(videoSubfolderNameOption);
-        AddOption(photosSubfolderNameOption);
-        AddOption(imageFileFormatPatternsOption);
-        AddOption(videoFileFormatPatternsOption);
+        AddOption(mediaExtensionsOption);
         AddOption(destinationPatternOption);
         AddOption(deleteEmptyFoldersOption);
         Description = "Organize media files into subfolders based on specified options";
@@ -85,10 +73,7 @@ internal class OrganizeCommandHandler : RootCommand, ICommandHandler
         var destination = context.ParseResult.GetValueForOption(destinationOption)!.FullName;
         var removeSource = context.ParseResult.GetValueForOption(removeSourceOption);
         var skipExisting = context.ParseResult.GetValueForOption(skipExistingOption);
-        var videoSubfolderName = context.ParseResult.GetValueForOption(videoSubfolderNameOption);
-        var photosSubfolderName = context.ParseResult.GetValueForOption(photosSubfolderNameOption);
-        var imageFileFormatPatterns = context.ParseResult.GetValueForOption(imageFileFormatPatternsOption);
-        var videoFileFormatPatterns = context.ParseResult.GetValueForOption(videoFileFormatPatternsOption);
+        var imageFileFormatPatterns = context.ParseResult.GetValueForOption(mediaExtensionsOption);
         var destinationPattern = context.ParseResult.GetValueForOption(destinationPatternOption);
         var deleteEmptyFolders = context.ParseResult.GetValueForOption(deleteEmptyFoldersOption);
 
@@ -98,13 +83,15 @@ internal class OrganizeCommandHandler : RootCommand, ICommandHandler
             DestinationRoot = destination,
             RemoveSource = removeSource,
             SkipExistingFiles = skipExisting,
-            VideoSubfolderName = videoSubfolderName,
-            PhotosSubfolderName = photosSubfolderName,
-            ImageFileFormatPatterns = imageFileFormatPatterns,
-            VideoFileFormatPatterns = videoFileFormatPatterns,
             DestinationPattern = destinationPattern,
             DeleteEmptyFolders = deleteEmptyFolders
         };
+        options.MediaCategories.Add(new MediaCategory
+        {
+            CategoryName = "custom",
+            CategoryRoot = "",
+            FileExtensions = context.ParseResult.GetValueForOption(mediaExtensionsOption)
+        });
 
         var organizer = _organizerFactory.Create(options);
         try

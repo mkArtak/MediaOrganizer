@@ -1,77 +1,151 @@
 ﻿using MediaOrganizer.Core;
+using MediaOrganizer.Views;
+using Prism.Commands;
 using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 
-namespace MediaOrganizer.ViewModels
+namespace MediaOrganizer.ViewModels;
+
+public class FileOrganizerOptionsViewModel : BindableBase
 {
-    public class FileOrganizerOptionsViewModel : BindableBase
+    private string sourceRoot;
+    private string destinationRoot;
+    private bool removeSource;
+    private bool skipExistingFiles;
+    private string destinationPattern = "{Year}/{MonthName}/{Year}-{Month}-{Day}";
+    private bool deleteEmptyFolders;
+    private ObservableCollection<MediaCategory> mediaCategories;
+    private Window _currentDialog;
+
+    public bool SkipExistingFiles { get => skipExistingFiles; set => SetProperty(ref skipExistingFiles, value); }
+
+    public bool DeleteEmptyFolders { get => deleteEmptyFolders; set => SetProperty(ref deleteEmptyFolders, value); }
+
+    public bool RemoveSource { get => removeSource; set => SetProperty(ref this.removeSource, value); }
+
+    public string DestinationRoot { get => destinationRoot; set => SetProperty(ref this.destinationRoot, value); }
+
+    public string SourceRoot { get => sourceRoot; set => SetProperty(ref this.sourceRoot, value); }
+
+    public string DestinationPattern { get => destinationPattern; set => SetProperty(ref destinationPattern, value); }
+
+    public ObservableCollection<MediaCategory> MediaCategories { get => mediaCategories; set => SetProperty(ref mediaCategories, value); }
+
+    public DelegateCommand AddCategoryCommand { get; init; }
+
+    public DelegateCommand<MediaCategory> EditCategoryCommand { get; init; }
+
+    public FileOrganizerOptionsViewModel() : base()
     {
-        private string videoSubfolderName = FilesOrganizerOptions.DefaultVideoSubfolderName;
-        private string photosSubfolderName = FilesOrganizerOptions.DefaultPhotosSubfolderName;
+        AddCategoryCommand = new DelegateCommand(OnAddCategory);
+        EditCategoryCommand = new DelegateCommand<MediaCategory>(OnEditCategory);
+    }
 
-        private string[] photoExtensions = FilesOrganizerOptions.DefaultPhotoFileFormatPatterns;
-        private string[] videoExtensions = FilesOrganizerOptions.DefaultVideoFileFormatPatterns;
+    public FileOrganizerOptionsViewModel(FilesOrganizerOptions options) : this()
+    {
+        this.SourceRoot = options.SourceRoot;
+        this.DestinationRoot = options.DestinationRoot;
+        this.RemoveSource = options.RemoveSource;
+        this.SkipExistingFiles = options.SkipExistingFiles;
+        this.DestinationPattern = options.DestinationPattern;
+        this.DeleteEmptyFolders = options.DeleteEmptyFolders;
+        this.MediaCategories = new ObservableCollection<MediaCategory>(options.MediaCategories);
+    }
 
-        private string sourceRoot;
-        private string destinationRoot;
-        private bool removeSource;
-        private bool skipExistingFiles;
-        private string destinationPattern = "{Year}/{MonthName}/{Year}-{Month}-{Day}";
-        private bool deleteEmptyFolders;
-
-        public bool SkipExistingFiles { get => skipExistingFiles; set => SetProperty(ref skipExistingFiles, value); }
-
-        public bool DeleteEmptyFolders { get => deleteEmptyFolders; set => SetProperty(ref deleteEmptyFolders, value); }
-
-        public bool RemoveSource { get => removeSource; set => SetProperty(ref this.removeSource, value); }
-
-        public string DestinationRoot { get => destinationRoot; set => SetProperty(ref this.destinationRoot, value); }
-
-        public string SourceRoot { get => sourceRoot; set => SetProperty(ref this.sourceRoot, value); }
-
-        public string PhotosSubfolderName { get => photosSubfolderName; set => SetProperty(ref this.photosSubfolderName, value); }
-
-        public string VideoSubfolderName { get => videoSubfolderName; set => SetProperty(ref this.videoSubfolderName, value); }
-
-        public string DestinationPattern { get => destinationPattern; set => SetProperty(ref destinationPattern, value); }
-
-        public string[] PhotoExtensions { get => photoExtensions; set => SetProperty(ref photoExtensions, value); }
-
-        public string[] VideoExtensions { get => videoExtensions; set => SetProperty(ref videoExtensions, value); }
-
-        public FileOrganizerOptionsViewModel() : base()
+    public FilesOrganizerOptions GetOptions()
+    {
+        var result = new FilesOrganizerOptions
         {
+            SourceRoot = this.SourceRoot,
+            DestinationRoot = this.DestinationRoot,
+            RemoveSource = this.RemoveSource,
+            SkipExistingFiles = this.SkipExistingFiles,
+            DestinationPattern = this.DestinationPattern,
+            DeleteEmptyFolders = this.DeleteEmptyFolders,
+        };
 
+        result.MediaCategories.AddRange(this.MediaCategories ?? new ObservableCollection<MediaCategory>());
+
+        return result;
+    }
+
+    private void OnAddCategory()
+    {
+        ShowCategoryEditorDialog(null);
+    }
+
+    private void OnEditCategory(MediaCategory category)
+    {
+        if (category != null)
+        {
+            ShowCategoryEditorDialog(category);
         }
+    }
 
-        public FileOrganizerOptionsViewModel(FilesOrganizerOptions options) : base()
-        {
-            this.SourceRoot = options.SourceRoot;
-            this.DestinationRoot = options.DestinationRoot;
-            this.PhotosSubfolderName = options.PhotosSubfolderName;
-            this.VideoSubfolderName = options.VideoSubfolderName;
-            this.RemoveSource = options.RemoveSource;
-            this.SkipExistingFiles = options.SkipExistingFiles;
-            this.DestinationPattern = options.DestinationPattern;
-            this.PhotoExtensions = options.ImageFileFormatPatterns;
-            this.VideoExtensions = options.VideoFileFormatPatterns;
-            this.DeleteEmptyFolders = options.DeleteEmptyFolders;
-        }
+    private void ShowCategoryEditorDialog(MediaCategory category)
+    {
+        var vm = new MediaCategoryEditorViewModel(category, ValidateCategory,
+            onSave: OnSaveCategory,
+            onDelete: cat => { MediaCategories.Remove(MediaCategories.Single(c => c.CategoryName == cat.CategoryName)); _currentDialog.Close(); }
+            );
 
-        public FilesOrganizerOptions GetOptions()
+        _currentDialog = new MediaCategoryEditorWindow
         {
-            return new FilesOrganizerOptions
+            DataContext = vm
+        };
+        _currentDialog.ShowDialog();
+        _currentDialog = null;
+    }
+
+    private void OnSaveCategory(MediaCategory existingCategory, MediaCategory newCategory)
+    {
+        if (existingCategory is not null)
+            MediaCategories.Remove(existingCategory);
+
+        MediaCategories.Add(newCategory);
+
+        _currentDialog.Close();
+    }
+
+    private bool ValidateCategory(MediaCategory originalCategory, MediaCategory newCategory, out Dictionary<string, string> errors)
+    {
+        ///TODO: This is not an optimal implementation as we break on the first error.
+        /// Improve this later to allow reporting all errors
+        errors = new Dictionary<string, string>();
+
+        // The validation is done in two steps:
+        // 1. Check if another category with the same name already exists
+        // 2. Check if any other category has an extension defined by this category
+        // The expectations is that there is only a small number of categories and each will have only a small number of extensions.
+        // Hence, these iterative brute-force approach is ok.
+        foreach (var cat in mediaCategories)
+        {
+            if (cat == originalCategory)
+                continue; // Skip the original category being edited
+
+            if (cat.CategoryName.Equals(newCategory.CategoryName, StringComparison.InvariantCultureIgnoreCase))
             {
-                SourceRoot = this.SourceRoot,
-                DestinationRoot = this.DestinationRoot,
-                PhotosSubfolderName = this.PhotosSubfolderName,
-                VideoSubfolderName = this.VideoSubfolderName,
-                RemoveSource = this.RemoveSource,
-                SkipExistingFiles = this.SkipExistingFiles,
-                DestinationPattern = this.DestinationPattern,
-                ImageFileFormatPatterns = this.PhotoExtensions,
-                VideoFileFormatPatterns = this.VideoExtensions,
-                DeleteEmptyFolders = this.DeleteEmptyFolders
-            };
+                errors.Add(nameof(MediaCategory.CategoryName), "A category with the chosen name already exists. Please use a different name.");
+                return false;
+            }
+
+            foreach (var existingExtension in cat.FileExtensions)
+            {
+                foreach (var newExtension in newCategory.FileExtensions)
+                {
+                    if (existingExtension.Equals(newExtension, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        errors.Add(nameof(MediaCategory.FileExtensions), $"Extension `{newExtension}` is used in category {cat.CategoryName}.");
+                        return false;
+                    }
+                }
+            }
         }
+
+        return true;
     }
 }

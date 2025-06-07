@@ -1,0 +1,113 @@
+﻿<Window x:Class="MediaOrganizer.Views.MediaCategoryEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MediaOrganizer.Views"
+        xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
+        xmlns:uc="clr-namespace:MediaOrganizer.Controls"
+        mc:Ignorable="d"
+        Title="Create or edit a category" MinHeight="260" Height="260" MinWidth="600" Width="600">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="cvBoolenToVisibilityConverter" />
+
+        <!-- Shared Modern Button Style -->
+        <Style x:Key="DialogButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="Background" Value="#F0F0F0" />
+            <Setter Property="Padding" Value="10,4" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#CCC" />
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E6F4FA" />
+                    <Setter Property="BorderBrush" Value="#89CFF0" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SaveButtonStyle" TargetType="Button" BasedOn="{StaticResource DialogButtonStyle}">
+            <Setter Property="Background" Value="#E6F4EA"/>
+            <Setter Property="BorderBrush" Value="#A4D4AE"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C7EACC"/>
+                    <Setter Property="BorderBrush" Value="#6BBF7A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Destructive Action Style -->
+        <Style x:Key="DeleteButtonStyle" TargetType="Button" BasedOn="{StaticResource DialogButtonStyle}">
+            <Setter Property="Foreground" Value="#D32F2F"/>
+            <Setter Property="BorderBrush" Value="#D32F2F"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFEBEB"/>
+                    <Setter Property="BorderBrush" Value="#B71C1C"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MediaCategoryEditorViewModel />
+    </Window.DataContext>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Category Name -->
+        <TextBlock Text="Category Name:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Margin="0,0,8,8" />
+        <TextBox Text="{Binding CategoryName, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" Margin="0,0,0,8" />
+        <uc:FieldInfo InformationText="The name of the category. Choose a relatively short one, something up to 10 characters in length." Grid.Row="0" Grid.Column="2"/>
+
+        <!-- Category Root -->
+        <TextBlock Text="Category Root:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="0,0,8,8"/>
+        <TextBox Text="{Binding CategoryRoot, Mode=TwoWay, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Row="1" Grid.Column="1" Margin="0,0,0,8" ToolTip="Optional base folder path associated with this category" />
+        <uc:FieldInfo InformationText="An optional name for the directory, to be used as a root for all the matching media files. If specified, any matching file will be organized under this folder, following the rest of the rules that are specified." Grid.Row="1" Grid.Column="2"/>
+
+        <!-- Extensions -->
+        <TextBlock Text="Extensions:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="0,0,8,8"/>
+        <TextBox Text="{Binding ExtensionsText, Mode=TwoWay,ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" TextWrapping="Wrap" Height="60" Grid.Row="2" Grid.Column="1" Margin="0,0,0,8" ToolTip="Comma-separated list, e.g. .jpg, .png, .jpeg">
+            
+        </TextBox>
+        <uc:FieldInfo InformationText="Comma-separated list of extensions to include as part of this category. (.img, .jpg, ...)" Grid.Row="2" Grid.Column="2" Margin="0, 32, 0 ,0"/>
+
+
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0" Height="30">
+            <Button Content="Save" Style="{StaticResource SaveButtonStyle}" Margin="12,0" IsDefault="True" Command="{Binding SaveCommand}" />
+            <Button Content="Cancel" Style="{StaticResource DialogButtonStyle}" Margin="12,0" IsCancel="True" />
+            <Button Content="Delete" Style="{StaticResource DeleteButtonStyle}" Margin="16,0,0,0"
+            Visibility="{Binding ShowDeleteButton, Converter={StaticResource cvBoolenToVisibilityConverter}}"
+            Command="{Binding DeleteCommand}" />
+        </StackPanel>
+    </Grid>
+</Window>

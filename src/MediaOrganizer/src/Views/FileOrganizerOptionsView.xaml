@@ -1,31 +1,33 @@
 ﻿<UserControl x:Class="MediaOrganizer.Views.FileOrganizerOptionsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:MediaOrganizer.ViewModels"
-             xmlns:cv="clr-namespace:MediaOrganizer.Converters"
              mc:Ignorable="d"
-             d:DesignWidth="800">
-    <UserControl.Resources>
-        <cv:FileExtensionsArrayToStringConverter x:Key="cvExtensionsToStringConverter" />
-    </UserControl.Resources>
+             x:Name="RootControl">
 
+    <UserControl.DataContext>
+        <vm:FileOrganizerOptionsViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style x:Key="AddCategoryButtonStyle" TargetType="Button" BasedOn="{StaticResource PillButtonStyle}">
+            <Setter Property="Background" Value="#E6F4EA"/>
+            <!-- light green tint -->
+            <Setter Property="BorderBrush" Value="#A4D4AE"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C7EACC"/>
+                    <Setter Property="BorderBrush" Value="#6BBF7A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <StackPanel Margin="10">
-        <TextBlock Text="Folder Naming" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,5" />
-        <TextBlock Text="Movies Root Folder Name:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding VideoSubfolderName, Mode=TwoWay}" ToolTip="The name of the folder under which all the movies will be organized." Margin="0,0,0,5" />
-        <TextBlock Text="Photos Root Folder Name:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding PhotosSubfolderName, Mode=TwoWay}" ToolTip="The name of the folder under which all the photos will be organized." Margin="0,0,0,5" />
         <TextBlock Text="Destination Folder Structure:" FontWeight="SemiBold" Margin="0,6,0,2" />
         <TextBox Text="{Binding DestinationPattern, Mode=TwoWay}" ToolTip="Define how organized folders will be created using placeholders like {Year}\\{Month}\\{Day}." Margin="0,0,0,10" />
 
-        <TextBlock Text="File Type Settings" FontSize="13" FontWeight="SemiBold" Margin="0,15,0,5" />
-        <TextBlock Text="Photo Extensions:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding PhotoExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" ToolTip="Comma-separated list of file extensions considered as photos." Margin="0,0,0,5" />
-        <TextBlock Text="Movie Extensions:" FontWeight="SemiBold" Margin="0,6,0,2" />
-        <TextBox Text="{Binding VideoExtensions, Mode=TwoWay, Converter={StaticResource cvExtensionsToStringConverter}}" ToolTip="Comma-separated list of file extensions considered as movies." Margin="0,0,0,10" />
-
+        <!-- Organizer Options (restored from original PR) -->
         <GroupBox Header="File Handling Options" Margin="0,10,0,0">
             <GroupBox.Resources>
                 <Style TargetType="Border">
@@ -39,5 +41,33 @@
             </StackPanel>
         </GroupBox>
 
+        <!-- Categories Section -->
+        <StackPanel Margin="0,8,0,0">
+            <TextBlock Text="Categories"
+                       Style="{StaticResource SectionHeaderTextBlockStyle}" />
+
+            <WrapPanel Margin="0,4,0,0" ItemHeight="32" ItemWidth="Auto" Orientation="Horizontal">
+                <!-- Existing categories -->
+                <ItemsControl ItemsSource="{Binding MediaCategories}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding CategoryName}"
+                                    Style="{StaticResource PillButtonStyle}"
+                                    Margin="4,2,4,0"
+                                    Command="{Binding DataContext.EditCategoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}" Cursor="Hand" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Add New Category -->
+                <Button Content="+ Add Category" Style="{StaticResource AddCategoryButtonStyle}" Margin="4,2,4,0" Command="{Binding AddCategoryCommand}" Cursor="Hand" />
+            </WrapPanel>
+        </StackPanel>
     </StackPanel>
 </UserControl>
