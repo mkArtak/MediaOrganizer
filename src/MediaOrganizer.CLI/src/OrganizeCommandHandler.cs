@@ -86,11 +86,18 @@ internal class OrganizeCommandHandler : RootCommand, ICommandHandler
             DestinationPattern = destinationPattern,
             DeleteEmptyFolders = deleteEmptyFolders
         };
+
+        var extensions = context.ParseResult.GetValueForOption(mediaExtensionsOption);
+        if (extensions!.Length == 1 && extensions[0].IndexOf(',') > 0)
+        {
+            extensions = extensions[0].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        }
+
         options.MediaCategories.Add(new MediaCategory
         {
             CategoryName = "custom",
             CategoryRoot = "",
-            FileExtensions = context.ParseResult.GetValueForOption(mediaExtensionsOption)
+            FileExtensions = extensions
         });
 
         var organizer = _organizerFactory.Create(options);
