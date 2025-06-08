@@ -25,9 +25,22 @@ Here’s what the app looks like:
 
 You can customize many options to control how exactly to organize your media.
 
-![Options](https://github.com/user-attachments/assets/4659af2d-7856-45a3-b3ab-7f8d0c57814e)
+![Options](https://github.com/user-attachments/assets/ecec7cb6-facf-4697-8037-919712b16cc9)
 
 ### ⚙️ Options Explained
+
+The concept of `media` is expandable. Different people may have different expectations from what that media is and what it means to organize it.
+That's why the Media Organizer supports custom categories.
+Out of the box, the app comes with `Movies` and `Photos` defined as categories. Let's say you want to also organize your music library.
+You can do so by adding a new category called `Music` as follows.
+1. Expand the `Advanced Options` section
+2. Click the `+ Add Category` button
+3. Name the new category by populating `Music` in the `Category Name` field.
+4. If you want your music library to be organized under a separate root folder, provide a name for that folder in the `Category Root` folder.
+5. Populate the list of file extensions that should be considered `music`. Let's say you care about only `.wav` and `.mp3` files.
+6. Here what the popualted new category dialog should look like:
+![New Music Category](https://github.com/user-attachments/assets/fcc2991d-4c9a-4ad8-8812-25eb25222e57)
+
 
 #### 🔤 Folder Naming
 
