@@ -129,6 +129,18 @@ Options:
 
 Note, that the CLI has no knowledge of categories. It simply takes the list of file extensions as an input and organizes those specific set of files according with the rest of the optinos that are provided.
 
+Below is an example call of the CLI to organize .jpg and .png images:
+
+```bash
+MediaOrganizer.CLI.exe --source "C:\Unsorted" --destination "C:\Sorted" --media-extensions .png --media-extensions .jpg
+```
+
+Alternatively, you can combine all the extensions into a single `--media-extensions` parameter as follows:
+
+```bash
+MediaOrganizer.CLI.exe --source "C:\Unsorted" --destination "C:\Sorted" --media-extensions ".png,.jpg"
+```
+
 ---
 
 ## 🤝 Contributions
