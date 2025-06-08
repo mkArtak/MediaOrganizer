@@ -14,7 +14,7 @@ Simplify your media file management experience by installing directly from the [
 
 ## How to use it?
 
-The app comes in two forms: a command-line utility and a desktop application to run on a Windows PC.
+The app comes in two forms: a command-line utility and a desktop application to run on a Windows machine.
 
 ---
 ## 🖼️ Desktop App in Action
@@ -26,6 +26,18 @@ Here’s what the app looks like:
 You can customize many options to control how exactly to organize your media.
 
 ![Options](https://github.com/user-attachments/assets/ecec7cb6-facf-4697-8037-919712b16cc9)
+
+---
+
+#### 🖼 Media Categories
+
+Categories are a mechanism to differentiate different types of media and give the user ability to organize them differently.
+Each category, defines a unique set of file extensions that determine the types of files that will be treated as part of that category.
+When defining those in the Category Management UI, separate the extensions with commas `,` and define them in the following pattern: ".jpg, .png, ...".
+
+The Windows app comes with two categories defines - `Movies` and `Photos`. Those are fullly configurable and can even be removed.
+
+---
 
 ### ⚙️ Options Explained
 
@@ -42,22 +54,20 @@ You can do so by adding a new category called `Music` as follows.
 ![New Music Category](https://github.com/user-attachments/assets/fcc2991d-4c9a-4ad8-8812-25eb25222e57)
 
 
-#### 🔤 Folder Naming
+#### 🔤 Organizatation structure
+
+The `Destination Folder Structure` field gives the user control over how to structure the organized media within the destination folder.
+From a high-level point of view, a given media file is going to be put under the following structure during organization:
+
+**[Destination Root]/[Category Root]/[Destination Folder Structure]**
 
 | Option                     | Description                                                                                       |
 |---------------------------|---------------------------------------------------------------------------------------------------|
-| **Movies Root Folder Name** | Base folder name under which all organized video files will be placed (e.g., `Movies`).            |
-| **Photos Root Folder Name** | Base folder name under which all organized photo files will be placed (e.g., `Photos`).            |
+| **Destination Root** | Path to the folder, under which all the media files will be organized. This is your root level folder, something like `C:\Media\`            |
+| **Category Root** | The name of the category-specific folder, under which all media for that category will reside. For your movie collection, this may be called `Movies`. This setting is optional and categories may not define it.            |
 | **Destination Folder Structure** | Folder hierarchy pattern using placeholders:<br/>- `{Year}` → e.g., `2023`<br/>- `{Month}` → `03`<br/>- `{MonthName}` → `March`<br/>- `{Day}` → `15`<br/><br/>Example: `{Year}/{MonthName}` results in folders like `2023/March`. |
 
----
-
-#### 🖼 File Type Settings
-
-| Option             | Description                                                                                     |
-|--------------------|-------------------------------------------------------------------------------------------------|
-| **Photo Extensions** | List of file extensions treated as photo files. Default includes:<br/>`.jpg`, `.jpeg`, `.png`, `.heic`, `.bmp`, `.gif`, `.tiff`, `.tif`, `.webp` |
-| **Movie Extensions** | List of file extensions treated as video files. Default includes:<br/>`.mov`, `.mp4`, `.avi`, `.3gp`, `.mpg`, `.mkv`, `.wmv`, `.flv`, `.m4v`, `.webm` |
+Note, that the organizer uses each file's original creation date as the parameter for calculating the `Destination Folder Structure`.
 
 ---
 
@@ -110,17 +120,15 @@ Options:
   --remove-source                                            Remove source files after moving. [default: True]
   --skip-existing                                            Skip files if they already exist in the destination
                                                              (comparison is done based on the filename. [default: True]
-  --video-subfolder-name <video-subfolder-name>              The name of the subfolder to organize video files under.
-                                                             [default: Movies]
-  --photos-subfolder-name <photos-subfolder-name>            The name of the subfolder to organize photo files under.
-                                                             [default: Photos]
-  --image-file-format-patterns <image-file-format-patterns>  The file formats to consider as images. [default:
-                                                             .jpg|.jpeg|.png]
-  --video-file-format-patterns <video-file-format-patterns>  The file formats to consider as videos. [default:
-                                                             .mov|.mp4|.avi|.3gp|.mpg]
+  --destination-pattern                                      The pattern to use for organizing files in the destination folder. See the `Destination Folder Structure` setting above under the `Organizational Structure` header for details.
+  --delete-empty-folders                                     Delete empty folders from the source directory, after moving files.
+  --media-extensions                                         The file extensions that will be be organized under the specified destination directory. Use the `".jpg, .png,.pdf"` format.
   --version                                                  Show version information
   -?, -h, --help                                             Show help and usage information
 ```
+
+Note, that the CLI has no knowledge of categories. It simply takes the list of file extensions as an input and organizes those specific set of files according with the rest of the optinos that are provided.
+
 ---
 
 ## 🤝 Contributions
