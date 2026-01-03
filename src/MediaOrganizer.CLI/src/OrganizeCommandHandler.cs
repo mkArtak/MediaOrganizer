@@ -1,45 +1,56 @@
 ﻿using MediaOrganizer.Core;
 using Microsoft.Extensions.Logging;
 using System.CommandLine;
-using System.CommandLine.Invocation;
 
 namespace MediaOrganizer.CLI;
 
-internal class OrganizeCommandHandler : RootCommand, ICommandHandler
+internal class OrganizeCommandHandler : RootCommand
 {
-    private readonly Option<DirectoryInfo> sourceOption = new Option<DirectoryInfo>("--source", "The source directory containing media files that need to be organized.")
+    private readonly Option<DirectoryInfo> sourceOption = new Option<DirectoryInfo>("--source")
     {
-        IsRequired = true
+        Description = "The source directory containing media files that need to be organized.",
+        Required = true
     };
 
-    private readonly Option<DirectoryInfo> destinationOption = new Option<DirectoryInfo>("--destination", "The destination directory to organize media files under.")
+    private readonly Option<DirectoryInfo> destinationOption = new Option<DirectoryInfo>("--destination")
     {
-        IsRequired = true
+        Description = "The destination directory to organize media files under.",
+        Required = true
     };
 
-    private readonly Option<bool> removeSourceOption = new Option<bool>("--remove-source", () => true, "Remove source files after moving.")
+    private readonly Option<bool> removeSourceOption = new Option<bool>("--remove-source")
     {
-        IsRequired = false
+        Description = "Remove source files after moving.",
+        DefaultValueFactory = ar => true,
+        Required = false
     };
 
-    private readonly Option<bool> skipExistingOption = new Option<bool>("--skip-existing", () => true, "Skip files if they already exist in the destination (comparison is done based on the filename.")
+    private readonly Option<bool> skipExistingOption = new Option<bool>("--skip-existing")
     {
-        IsRequired = false
+        Description = "Skip files if they already exist in the destination (comparison is done based on the filename).",
+        DefaultValueFactory = ar => true,
+        Required = false
     };
 
-    private readonly Option<string[]> mediaExtensionsOption = new Option<string[]>("--media-extensions", () => Array.Empty<string>(), "The file extensions that will be be organized under the specified destination directory.")
+    private readonly Option<string[]> mediaExtensionsOption = new Option<string[]>("--media-extensions")
     {
-        IsRequired = true,
+        Description = "The file extensions that will be be organized under the specified destination directory.",
+        DefaultValueFactory = ar => Array.Empty<string>(),
+        Required = true,
     };
 
-    private readonly Option<string> destinationPatternOption = new Option<string>("--destination-pattern", () => FilesOrganizerOptions.DefaultDestinationPattern, "The pattern to use for organizing files in the destination folder.")
+    private readonly Option<string> destinationPatternOption = new Option<string>("--destination-pattern")
     {
-        IsRequired = false
+        Description = "The pattern used to create subfolders in the destination directory. Default is '{Year}/{MonthName}/{Year}-{Month}-{Day}'.",
+        DefaultValueFactory = ar => FilesOrganizerOptions.DefaultDestinationPattern,
+        Required = false
     };
 
-    private readonly Option<bool> deleteEmptyFoldersOption = new Option<bool>("--delete-empty-folders", () => true, "Delete empty folders after moving files.")
+    private readonly Option<bool> deleteEmptyFoldersOption = new Option<bool>("--delete-empty-folders")
     {
-        IsRequired = false
+        Description = "Delete empty folders in the source directory after organizing.",
+        DefaultValueFactory = ar => true,
+        Required = false
     };
 
     private readonly IOrganizerFactory _organizerFactory;
@@ -50,32 +61,28 @@ internal class OrganizeCommandHandler : RootCommand, ICommandHandler
         _organizerFactory = organizerFactory ?? throw new ArgumentNullException(nameof(organizerFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        AddOption(sourceOption);
-        AddOption(destinationOption);
-        AddOption(removeSourceOption);
-        AddOption(skipExistingOption);
-        AddOption(mediaExtensionsOption);
-        AddOption(destinationPatternOption);
-        AddOption(deleteEmptyFoldersOption);
         Description = "Organize media files into subfolders based on specified options";
 
-        this.Handler = this;
+        Options.Add(sourceOption);
+        Options.Add(destinationOption);
+        Options.Add(removeSourceOption);
+        Options.Add(skipExistingOption);
+        Options.Add(mediaExtensionsOption);
+        Options.Add(destinationPatternOption);
+        Options.Add(deleteEmptyFoldersOption);
+
+        this.SetAction(parseResult => InvokeAsync(parseResult));
     }
 
-    public int Invoke(InvocationContext context)
+    private async Task<int> InvokeAsync(ParseResult parseResult)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task<int> InvokeAsync(InvocationContext context)
-    {
-        var source = context.ParseResult.GetValueForOption(sourceOption)!.FullName;
-        var destination = context.ParseResult.GetValueForOption(destinationOption)!.FullName;
-        var removeSource = context.ParseResult.GetValueForOption(removeSourceOption);
-        var skipExisting = context.ParseResult.GetValueForOption(skipExistingOption);
-        var imageFileFormatPatterns = context.ParseResult.GetValueForOption(mediaExtensionsOption);
-        var destinationPattern = context.ParseResult.GetValueForOption(destinationPatternOption);
-        var deleteEmptyFolders = context.ParseResult.GetValueForOption(deleteEmptyFoldersOption);
+        var source = parseResult.GetRequiredValue(sourceOption).FullName;
+        var destination = parseResult.GetRequiredValue(destinationOption).FullName;
+        var removeSource = parseResult.GetValue(removeSourceOption);
+        var skipExisting = parseResult.GetValue(skipExistingOption);
+        var imageFileFormatPatterns = parseResult.GetValue(mediaExtensionsOption);
+        var destinationPattern = parseResult.GetValue(destinationPatternOption);
+        var deleteEmptyFolders = parseResult.GetValue(deleteEmptyFoldersOption);
 
         var options = new FilesOrganizerOptions
         {
@@ -84,10 +91,10 @@ internal class OrganizeCommandHandler : RootCommand, ICommandHandler
             RemoveSource = removeSource,
             SkipExistingFiles = skipExisting,
             DestinationPattern = destinationPattern,
-            DeleteEmptyFolders = deleteEmptyFolders
+            DeleteEmptyFolders = deleteEmptyFolders,
         };
 
-        var extensions = context.ParseResult.GetValueForOption(mediaExtensionsOption);
+        var extensions = parseResult.GetValue(mediaExtensionsOption);
         if (extensions!.Length == 1 && extensions[0].IndexOf(',') > 0)
         {
             extensions = extensions[0].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
