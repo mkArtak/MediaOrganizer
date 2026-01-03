@@ -4,7 +4,6 @@
 using MediaOrganizer.CLI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.CommandLine;
 
 
 var sc = new ServiceCollection();
@@ -14,5 +13,4 @@ sc.AddTransient<OrganizeCommandHandler>();
 var sp = sc.BuildServiceProvider();
 
 var command = sp.GetRequiredService<OrganizeCommandHandler>();
-
-await command.InvokeAsync(args);
+await command.Parse(args).InvokeAsync();
