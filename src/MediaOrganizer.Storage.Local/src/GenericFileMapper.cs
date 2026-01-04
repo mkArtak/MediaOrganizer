@@ -12,12 +12,20 @@ public class GenericFileMapper : IMapper
     private readonly string destinationRoot;
     private static readonly string[] monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     private readonly string destinationFolderPattern;
+    private readonly IFileCreationDateExtractor _fileCreationDateExtractor;
 
-    public GenericFileMapper(string[] patterns, string destinationRoot, string destinationPattern)
+    internal GenericFileMapper(string[] patterns, string destinationRoot, string destinationPattern, IFileCreationDateExtractor fileCreationDateExtractor)
     {
         this.patterns = patterns ?? throw new ArgumentNullException(nameof(patterns));
         this.destinationRoot = destinationRoot ?? throw new ArgumentNullException(nameof(destinationRoot));
         this.destinationFolderPattern = destinationPattern ?? throw new ArgumentNullException(nameof(destinationPattern));
+        _fileCreationDateExtractor = fileCreationDateExtractor ?? throw new ArgumentNullException(nameof(fileCreationDateExtractor));
+    }
+
+    public GenericFileMapper(string[] patterns, string destinationRoot, string destinationPattern, bool useMetadata = false)
+        : this(patterns, destinationRoot, destinationPattern, useMetadata ? new ExifCreationDateExtractor() : new FileInfoBasedCreationDateExtractor())
+    {
+
     }
 
     public bool TryGetDestination(string path, out string destination)
@@ -29,7 +37,8 @@ public class GenericFileMapper : IMapper
         }
 
         FileInfo info = new FileInfo(path);
-        var dateTaken = info.CreationTimeUtc > info.LastWriteTimeUtc ? info.LastWriteTimeUtc : info.CreationTimeUtc;
+        DateTime dateTaken = _fileCreationDateExtractor.ExtractCreationDate(info);
+
         string relativePath = GetRelativeDestinationFolder(dateTaken);
         string destinationDirectory = Path.Combine(this.destinationRoot, relativePath);
 
