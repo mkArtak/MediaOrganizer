@@ -38,6 +38,7 @@
                 <CheckBox Content="Delete source files after organizing" IsChecked="{Binding RemoveSource, Mode=TwoWay}" Margin="0,5,0,5" />
                 <CheckBox Content="Skip files that already exist at destination" IsChecked="{Binding SkipExistingFiles, Mode=TwoWay}" Margin="0,5,0,5" />
                 <CheckBox Content="Delete empty folders after organizing" IsChecked="{Binding Path=DeleteEmptyFolders, Mode=TwoWay}" Margin="0,5,0,5" />
+                <CheckBox Content="Use image metadata (slower but more precise in identifying media origination dates)" IsChecked="{Binding UseMetadata, Mode=TwoWay}" Margin="0,5,0,5" />
             </StackPanel>
         </GroupBox>
 
