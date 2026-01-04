@@ -53,6 +53,13 @@ internal class OrganizeCommandHandler : RootCommand
         Required = false
     };
 
+    private readonly Option<bool> useMetadataOption = new Option<bool>("--use-metadata")
+    {
+        Description = "Use image exif metadata as source for original creation date. Enabling this option will result in slower processing",
+        DefaultValueFactory = ar => false,
+        Required = false,
+    };
+
     private readonly IOrganizerFactory _organizerFactory;
     private readonly ILogger _logger;
 
@@ -70,6 +77,7 @@ internal class OrganizeCommandHandler : RootCommand
         Options.Add(mediaExtensionsOption);
         Options.Add(destinationPatternOption);
         Options.Add(deleteEmptyFoldersOption);
+        Options.Add(useMetadataOption);
 
         this.SetAction(parseResult => InvokeAsync(parseResult));
     }
@@ -83,6 +91,7 @@ internal class OrganizeCommandHandler : RootCommand
         var imageFileFormatPatterns = parseResult.GetValue(mediaExtensionsOption);
         var destinationPattern = parseResult.GetValue(destinationPatternOption);
         var deleteEmptyFolders = parseResult.GetValue(deleteEmptyFoldersOption);
+        var useMetadata = parseResult.GetValue(useMetadataOption);
 
         var options = new FilesOrganizerOptions
         {
@@ -92,6 +101,8 @@ internal class OrganizeCommandHandler : RootCommand
             SkipExistingFiles = skipExisting,
             DestinationPattern = destinationPattern,
             DeleteEmptyFolders = deleteEmptyFolders,
+            //MediaCategories =
+            UseMetadata = useMetadata
         };
 
         var extensions = parseResult.GetValue(mediaExtensionsOption);

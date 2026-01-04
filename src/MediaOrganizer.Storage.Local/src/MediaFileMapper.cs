@@ -12,7 +12,7 @@ internal class MediaFileMapper : IMapper
     {
         foreach (var category in options.MediaCategories)
         {
-            var categoryMapper = new GenericFileMapper(category.FileExtensions, Path.Combine(options.DestinationRoot, category.CategoryRoot), options.DestinationPattern);
+            var categoryMapper = new GenericFileMapper(category.FileExtensions, Path.Combine(options.DestinationRoot, category.CategoryRoot), options.DestinationPattern, options.UseMetadata);
             _mappers.Add(categoryMapper);
         }
     }

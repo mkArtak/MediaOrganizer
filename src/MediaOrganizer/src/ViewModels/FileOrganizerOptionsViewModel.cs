@@ -20,12 +20,15 @@ public class FileOrganizerOptionsViewModel : BindableBase
     private bool deleteEmptyFolders;
     private ObservableCollection<MediaCategory> mediaCategories;
     private Window _currentDialog;
+    private bool useMetadata;
 
     public bool SkipExistingFiles { get => skipExistingFiles; set => SetProperty(ref skipExistingFiles, value); }
 
     public bool DeleteEmptyFolders { get => deleteEmptyFolders; set => SetProperty(ref deleteEmptyFolders, value); }
 
     public bool RemoveSource { get => removeSource; set => SetProperty(ref this.removeSource, value); }
+
+    public bool UseMetadata { get => useMetadata; set => SetProperty(ref useMetadata, value); }
 
     public string DestinationRoot { get => destinationRoot; set => SetProperty(ref this.destinationRoot, value); }
 
@@ -66,6 +69,7 @@ public class FileOrganizerOptionsViewModel : BindableBase
             SkipExistingFiles = this.SkipExistingFiles,
             DestinationPattern = this.DestinationPattern,
             DeleteEmptyFolders = this.DeleteEmptyFolders,
+            UseMetadata = this.UseMetadata
         };
 
         result.MediaCategories.AddRange(this.MediaCategories ?? new ObservableCollection<MediaCategory>());

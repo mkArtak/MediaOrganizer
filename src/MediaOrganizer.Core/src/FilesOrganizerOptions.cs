@@ -23,9 +23,11 @@ namespace MediaOrganizer.Core
 
         public string DestinationPattern { get; set; } = DefaultDestinationPattern;
 
+        public bool UseMetadata { get; set; }
+
         public override string ToString()
         {
-            return $"SourceRoot: {SourceRoot}{Environment.NewLine}DestinationRoot: {DestinationRoot}{Environment.NewLine}RemoveSource: {RemoveSource}{Environment.NewLine}SkipExistingFiles: {SkipExistingFiles}{Environment.NewLine}DeleteEmptyFolders: {DeleteEmptyFolders}";
+            return $"SourceRoot: {SourceRoot}{Environment.NewLine}DestinationRoot: {DestinationRoot}{Environment.NewLine}RemoveSource: {RemoveSource}{Environment.NewLine}SkipExistingFiles: {SkipExistingFiles}{Environment.NewLine}DeleteEmptyFolders: {DeleteEmptyFolders}{Environment.NewLine}UseMetadata: {UseMetadata}";
         }
     }
 }
