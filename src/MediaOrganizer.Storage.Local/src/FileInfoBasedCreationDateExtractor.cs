@@ -8,6 +8,6 @@ public class FileInfoBasedCreationDateExtractor : IFileCreationDateExtractor
 {
     public virtual DateTime ExtractCreationDate(FileInfo file)
     {
-        return file.CreationTimeUtc > file.LastWriteTimeUtc ? file.LastWriteTimeUtc : file.CreationTimeUtc;
+        return file.CreationTime > file.LastWriteTime ? file.LastWriteTime : file.CreationTime;
     }
 }
