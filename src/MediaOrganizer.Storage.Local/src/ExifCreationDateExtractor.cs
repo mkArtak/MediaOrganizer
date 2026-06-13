@@ -7,6 +7,20 @@ namespace MediaOrganizer.Storage.Local;
 
 internal sealed class ExifCreationDateExtractor : FileInfoBasedCreationDateExtractor
 {
+    private static readonly string[] SupportedTagNames =
+    [
+        "Date/Time Original",
+        "Date/Time Digitized",
+        "Date/Time",
+        "File Modified Date"
+    ];
+
+    private static readonly string[] OffsetAwareFormats =
+    [
+        "ddd MMM dd HH:mm:ss zzz yyyy",
+        "ddd MMM d HH:mm:ss zzz yyyy"
+    ];
+
     public ExifCreationDateExtractor()
     {
     }
@@ -18,38 +32,46 @@ internal sealed class ExifCreationDateExtractor : FileInfoBasedCreationDateExtra
         {
             foreach (var tag in item.Tags)
             {
-                if (tag.Name.Equals("Date/Time Original", StringComparison.OrdinalIgnoreCase) ||
-                    tag.Name.Equals("Date/Time Digitized", StringComparison.OrdinalIgnoreCase) ||
-                    tag.Name.Equals("Date/Time", StringComparison.OrdinalIgnoreCase) ||
-                    tag.Name.Equals("File Modified Date", StringComparison.OrdinalIgnoreCase))
+                if (SupportedTagNames.Contains(tag.Name, StringComparer.OrdinalIgnoreCase) &&
+                    TryParseMetadataTimestamp(tag.Description, out var captureDate))
                 {
-                    // Try EXIF numeric format first (e.g. "2025:04:08 19:37:09")
-                    if (DateTime.TryParseExact(tag.Description, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var originalDate))
-                    {
-                        return originalDate.ToUniversalTime();
-                    }
-
-                    // Exact parse for textual offset-aware formats like: "Tue Apr 08 19:37:09 -07:00 2025"
-                    var formats = new[]
-                    {
-                        "ddd MMM dd HH:mm:ss zzz yyyy",
-                        "ddd MMM d HH:mm:ss zzz yyyy"
-                    };
-
-                    if (DateTimeOffset.TryParseExact(tag.Description, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dto))
-                    {
-                        return dto.UtcDateTime;
-                    }
-
-                    // Final fallback: a general DateTimeOffset parse (less strict)
-                    if (DateTimeOffset.TryParse(tag.Description, CultureInfo.InvariantCulture, DateTimeStyles.None, out dto))
-                    {
-                        return dto.UtcDateTime;
-                    }
+                    return captureDate;
                 }
             }
         }
 
         return base.ExtractCreationDate(file);
+    }
+
+    internal static bool TryParseMetadataTimestamp(string value, out DateTime captureDate)
+    {
+        captureDate = default;
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        // EXIF numeric timestamps typically do not carry timezone information,
+        // so preserve the recorded calendar date instead of treating it as UTC.
+        if (DateTime.TryParseExact(value, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var originalDate))
+        {
+            captureDate = DateTime.SpecifyKind(originalDate, DateTimeKind.Unspecified);
+            return true;
+        }
+
+        if (DateTimeOffset.TryParseExact(value, OffsetAwareFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dto))
+        {
+            captureDate = dto.DateTime;
+            return true;
+        }
+
+        if (DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out dto))
+        {
+            captureDate = dto.DateTime;
+            return true;
+        }
+
+        return false;
     }
 }
